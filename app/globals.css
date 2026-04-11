@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0A0A0F;
+  --surface: #12121A;
+  --surface2: #1A1A26;
+  --border: #2A2A3D;
+  --accent: #CC785C;
+  --accent2: #7B68EE;
+  --text: #F0EEE6;
+  --muted: #666655;
+  --r2fit: #E8FF47;
+  --r2school: #2D7DD2;
+  --r2finance: #E53935;
+  --r2build: #FFFFFF;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "DM Sans", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+body {
+  min-height: 100dvh;
+}
+
+.font-display {
+  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.font-mono {
+  font-family: "DM Mono", ui-monospace, monospace;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
