@@ -77,8 +77,13 @@ body {
 
 .cell-press {
   transition: background-color 100ms ease, transform 100ms ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .cell-press:active {
   background-color: var(--surface);
   transform: scale(0.99);
+}
+
+.verse-fade {
+  transition: opacity 300ms ease;
 }

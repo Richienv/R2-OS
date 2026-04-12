@@ -41,9 +41,9 @@ const SECTIONS: Section[] = [
     title: "BUILD",
     headline: "2 of 3 projects have tasks done.",
     details: [
-      "ERP: Fix bank recon — pending.",
-      "OIC: ESP32 pins — done.",
-      "R2·FIT: Database — done.",
+      "ERP: Fix bank recon \u2014 pending.",
+      "OIC: ESP32 pins \u2014 done.",
+      "R2\u00b7FIT: Database \u2014 done.",
     ],
   },
 ];
@@ -52,10 +52,7 @@ export default function BriefPage() {
   const school = APPS.find((a) => a.id === "school")!;
 
   return (
-    <main
-      className="flex min-h-[100dvh] w-full flex-col"
-      style={{ background: "var(--bg)" }}
-    >
+    <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       {/* Header */}
       <header
         className="flex h-[52px] shrink-0 items-center justify-between px-6"
@@ -63,16 +60,16 @@ export default function BriefPage() {
       >
         <Link
           href="/"
-          className="font-serif text-[18px] leading-none"
+          className="flex h-11 w-11 items-center justify-start font-serif text-[18px]"
           style={{ color: "var(--fg)" }}
-          aria-label="Back to overview"
+          aria-label="Back to home"
         >
-          ←
+          &larr;
         </Link>
         <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>
           Daily Brief
         </span>
-        <span className="w-5" />
+        <span className="w-11" />
       </header>
 
       {/* Sections */}
@@ -81,9 +78,7 @@ export default function BriefPage() {
           <section
             key={s.appId}
             className="flex flex-col gap-3 py-8"
-            style={{
-              borderTop: i > 0 ? "0.5px solid var(--faint)" : "none",
-            }}
+            style={{ borderTop: i > 0 ? "0.5px solid var(--faint)" : "none" }}
           >
             <div className="flex items-center gap-2">
               <span
@@ -117,7 +112,7 @@ export default function BriefPage() {
         {/* Recommended action */}
         <section
           className="flex flex-col gap-3 py-8 mt-2"
-          style={{ borderTop: "0.8px solid var(--fg)" }}
+          style={{ borderTop: "1.5px solid var(--border-strong)" }}
         >
           <span
             className="font-label text-[9px]"
@@ -129,19 +124,16 @@ export default function BriefPage() {
             className="font-serif italic text-[17px] leading-snug"
             style={{ color: "var(--fg)" }}
           >
-            Open R2·SCHOOL.
+            Open R2\u00b7SCHOOL.
             <br />
             Your IB presentation is in 4 days.
           </p>
           <a
             href={school.url}
             className="self-start font-label text-[10px] underline mt-2"
-            style={{
-              color: "var(--fg)",
-              textUnderlineOffset: "3px",
-            }}
+            style={{ color: "var(--fg)", textUnderlineOffset: "3px" }}
           >
-            → OPEN R2·SCHOOL
+            &rarr; OPEN R2\u00b7SCHOOL
           </a>
         </section>
       </div>

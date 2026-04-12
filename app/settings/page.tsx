@@ -3,12 +3,24 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { APPS } from "@/lib/apps";
+import type { Translation } from "@/lib/verses";
+
+const TRANSLATIONS: { key: Translation; label: string }[] = [
+  { key: "esv", label: "ESV" },
+  { key: "niv", label: "NIV" },
+  { key: "kjv", label: "KJV" },
+  { key: "nlt", label: "NLT" },
+];
 
 export default function SettingsPage() {
   const [theme, setTheme] = useState("light");
+  const [translation, setTranslationState] = useState<Translation>("esv");
 
   useEffect(() => {
     setTheme(document.documentElement.getAttribute("data-theme") || "light");
+    setTranslationState(
+      (localStorage.getItem("r2os-translation") as Translation) || "esv"
+    );
   }, []);
 
   function toggleTheme() {
@@ -21,26 +33,28 @@ export default function SettingsPage() {
       ?.setAttribute("content", next === "dark" ? "#080808" : "#F2F0EB");
   }
 
+  function setTranslation(t: Translation) {
+    setTranslationState(t);
+    localStorage.setItem("r2os-translation", t);
+  }
+
   return (
-    <main
-      className="flex min-h-[100dvh] w-full flex-col"
-      style={{ background: "var(--bg)" }}
-    >
+    <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
         className="flex h-[52px] shrink-0 items-center justify-between px-6"
         style={{ borderBottom: "0.5px solid var(--border)" }}
       >
         <Link
           href="/"
-          className="font-serif text-[18px] leading-none"
+          className="flex h-11 w-11 items-center justify-start font-serif text-[18px]"
           style={{ color: "var(--fg)" }}
         >
-          ←
+          &larr;
         </Link>
         <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>
           Settings
         </span>
-        <span className="w-5" />
+        <span className="w-11" />
       </header>
 
       <div className="flex flex-col px-6 md:px-12 lg:px-32 py-4">
@@ -75,6 +89,32 @@ export default function SettingsPage() {
               DARK MODE
             </span>
           </button>
+        </section>
+
+        {/* Bible translation */}
+        <section
+          className="flex flex-col gap-4 py-8"
+          style={{ borderTop: "0.5px solid var(--border)" }}
+        >
+          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+            BIBLE TRANSLATION
+          </span>
+          <div className="flex gap-3">
+            {TRANSLATIONS.map((t) => (
+              <button
+                key={t.key}
+                onClick={() => setTranslation(t.key)}
+                className="font-label text-[10px] px-3 py-2 transition-colors duration-150"
+                style={{
+                  color: translation === t.key ? "var(--bg)" : "var(--muted)",
+                  background: translation === t.key ? "var(--fg)" : "transparent",
+                  border: `0.5px solid ${translation === t.key ? "var(--fg)" : "var(--border)"}`,
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </section>
 
         {/* Connected apps */}
