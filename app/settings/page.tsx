@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { APPS } from "@/lib/apps";
+import { navigateToApp } from "@/lib/navigate";
 import type { Translation } from "@/lib/verses";
 
 const TRANSLATIONS: { key: Translation; label: string }[] = [
@@ -83,15 +84,13 @@ export default function SettingsPage() {
                     {a.url.replace(/^https?:\/\//, "")}
                   </span>
                 </div>
-                <a
-                  href={a.url}
-                  target="_blank"
-                  rel="noopener"
-                  className="font-label text-[9px]"
+                <button
+                  onClick={() => navigateToApp(a.url)}
+                  className="font-label text-[9px] cursor-pointer"
                   style={{ color: "var(--text-dim)" }}
                 >
                   OPEN &rarr;
-                </a>
+                </button>
               </li>
             ))}
           </ul>

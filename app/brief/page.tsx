@@ -1,5 +1,8 @@
+"use client";
+
 import Link from "next/link";
 import { APPS } from "@/lib/apps";
+import { navigateToApp } from "@/lib/navigate";
 
 type Section = {
   appId: string;
@@ -84,9 +87,9 @@ export default function BriefPage() {
           <span style={{ color: "var(--text-muted)", fontSize: 13 }}>
             Your IB presentation is in 4 days.
           </span>
-          <a
-            href={school.url}
-            className="cell-press self-start mt-1 px-4 py-2"
+          <button
+            onClick={() => navigateToApp(school.url)}
+            className="cell-press self-start mt-1 px-4 py-2 cursor-pointer"
             style={{
               color: "var(--bg)",
               background: "var(--text)",
@@ -95,7 +98,7 @@ export default function BriefPage() {
             }}
           >
             OPEN R2·SCHOOL
-          </a>
+          </button>
         </section>
       </div>
     </main>

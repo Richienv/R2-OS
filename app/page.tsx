@@ -4,13 +4,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { APPS, getMostUrgent } from "@/lib/apps";
 import { VERSES } from "@/lib/verses";
+import { detectMobile, navigateToApp } from "@/lib/navigate";
 import type { AppSummary } from "@/lib/apps";
 import type { Translation } from "@/lib/verses";
-
-function detectMobile() {
-  if (typeof window === "undefined") return true;
-  return window.innerWidth < 768 || /iPhone|iPad|Android/i.test(navigator.userAgent);
-}
 
 function formatHeader(d: Date) {
   const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -35,7 +31,6 @@ function getTranslation(): Translation {
 
 export default function HubPage() {
   const [now, setNow] = useState<Date | null>(null);
-  const [isMobile, setIsMobile] = useState(true);
   const [verseIdx, setVerseIdx] = useState(0);
   const [verseFade, setVerseFade] = useState(true);
   const [translation, setTranslation] = useState<Translation>("esv");
@@ -44,7 +39,6 @@ export default function HubPage() {
 
   useEffect(() => {
     setNow(new Date());
-    setIsMobile(detectMobile());
     setVerseIdx(getDefaultVerse());
     setTranslation(getTranslation());
     const t = setInterval(() => setNow(new Date()), 30_000);
@@ -91,11 +85,9 @@ export default function HubPage() {
 
       {/* Urgent strip */}
       {urgent && (
-        <a
-          href={urgent.url}
-          target={isMobile ? "_self" : "_blank"}
-          rel="noopener"
-          className="cell-press flex h-10 shrink-0 items-center px-5 cursor-pointer"
+        <button
+          onClick={() => navigateToApp(urgent.url)}
+          className="cell-press flex h-10 w-full shrink-0 items-center px-5 cursor-pointer text-left"
           style={{
             borderTop: "1px solid var(--line-strong)",
             borderBottom: "0.5px solid var(--line)",
@@ -104,7 +96,7 @@ export default function HubPage() {
           <span style={{ color: "var(--text-dim)", fontSize: 12, fontWeight: 400 }}>
             ⚡ {urgent.alertMessage} → {urgent.name}
           </span>
-        </a>
+        </button>
       )}
 
       {/* Bible verse — centered hero */}
@@ -147,7 +139,7 @@ export default function HubPage() {
       {/* App grid — dark cells, big names */}
       <section className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2">
         {APPS.map((app, i) => (
-          <AppCell key={app.id} app={app} index={i} isMobile={isMobile} />
+          <AppCell key={app.id} app={app} index={i} />
         ))}
       </section>
 
@@ -234,7 +226,7 @@ export default function HubPage() {
   );
 }
 
-function AppCell({ app, index, isMobile }: { app: AppSummary; index: number; isMobile: boolean }) {
+function AppCell({ app, index }: { app: AppSummary; index: number }) {
   const isRight = index % 2 === 1;
   const isBottom = index >= 2;
   const isUrgent = app.alert && app.urgency === "urgent";
@@ -244,11 +236,9 @@ function AppCell({ app, index, isMobile }: { app: AppSummary; index: number; isM
     : `${app.metric} ${app.label.toLowerCase()}`;
 
   return (
-    <a
-      href={app.url}
-      target={isMobile ? "_self" : "_blank"}
-      rel="noopener"
-      className="cell-press flex flex-col justify-center px-5 py-5 cursor-pointer"
+    <button
+      onClick={() => navigateToApp(app.url)}
+      className="cell-press flex flex-col justify-center px-5 py-5 cursor-pointer text-left"
       style={{
         background: "var(--bg)",
         borderRight: isRight ? "none" : "1px solid var(--line)",
@@ -274,6 +264,6 @@ function AppCell({ app, index, isMobile }: { app: AppSummary; index: number; isM
       >
         {dataText}
       </span>
-    </a>
+    </button>
   );
 }

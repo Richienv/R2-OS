@@ -1,21 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { APPS } from "@/lib/apps";
-
-function detectMobile() {
-  if (typeof window === "undefined") return true;
-  return window.innerWidth < 768 || /iPhone|iPad|Android/i.test(navigator.userAgent);
-}
+import { navigateToApp } from "@/lib/navigate";
 
 export default function AppsPage() {
-  const [isMobile, setIsMobile] = useState(true);
-
-  useEffect(() => {
-    setIsMobile(detectMobile());
-  }, []);
-
   return (
     <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
@@ -30,13 +19,11 @@ export default function AppsPage() {
       </header>
 
       <ul className="flex flex-col">
-        {APPS.map((app, i) => (
+        {APPS.map((app) => (
           <li key={app.id} style={{ borderBottom: "0.5px solid var(--line)" }}>
-            <a
-              href={app.url}
-              target={isMobile ? "_self" : "_blank"}
-              rel="noopener"
-              className="cell-press flex h-[72px] items-center justify-between px-5"
+            <button
+              onClick={() => navigateToApp(app.url)}
+              className="cell-press flex h-[72px] w-full items-center justify-between px-5 cursor-pointer text-left"
             >
               <div className="flex flex-col gap-1">
                 <span style={{ fontSize: 20, fontWeight: 600, color: "var(--text)" }}>
@@ -54,7 +41,7 @@ export default function AppsPage() {
                   OPEN &rarr;
                 </span>
               </div>
-            </a>
+            </button>
           </li>
         ))}
       </ul>
