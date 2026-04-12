@@ -3,11 +3,9 @@ export type Urgency = "info" | "warning" | "urgent";
 export type AppSummary = {
   id: "fit" | "school" | "finance" | "build";
   name: string;
-  colorVar: string;
   url: string;
   metric: string;
   unit: string;
-  label: string;
   alert: boolean;
   alertMessage: string;
   urgency: Urgency;
@@ -17,11 +15,9 @@ export const APPS: AppSummary[] = [
   {
     id: "fit",
     name: "R2·FIT",
-    colorVar: "var(--r2fit)",
     url: "https://r2fit.vercel.app",
     metric: "843",
     unit: "kcal left",
-    label: "kcal left today",
     alert: true,
     alertMessage: "Dinner not logged",
     urgency: "warning",
@@ -29,11 +25,9 @@ export const APPS: AppSummary[] = [
   {
     id: "school",
     name: "R2·SCHOOL",
-    colorVar: "var(--r2school)",
     url: "https://r2school.vercel.app",
     metric: "4 DAYS",
     unit: "IB pres due",
-    label: "IB presentation",
     alert: true,
     alertMessage: "IB Presentation in 4 days.",
     urgency: "urgent",
@@ -41,11 +35,9 @@ export const APPS: AppSummary[] = [
   {
     id: "finance",
     name: "R2·FINANCE",
-    colorVar: "var(--r2finance)",
     url: "https://r2finance.vercel.app",
     metric: "580 RMB",
     unit: "free month",
-    label: "free this month",
     alert: false,
     alertMessage: "37 RMB left today",
     urgency: "info",
@@ -53,11 +45,9 @@ export const APPS: AppSummary[] = [
   {
     id: "build",
     name: "R2·BUILD",
-    colorVar: "var(--r2build)",
     url: "https://r2build.vercel.app",
     metric: "2/3",
     unit: "tasks done",
-    label: "tasks done today",
     alert: true,
     alertMessage: "ERP blocker unresolved.",
     urgency: "urgent",

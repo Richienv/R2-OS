@@ -16,77 +16,99 @@ export default function SettingsPage() {
     setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("r2os-theme", next);
+    document
+      .querySelector('meta[name="theme-color"]')
+      ?.setAttribute("content", next === "dark" ? "#080808" : "#F2F0EB");
   }
 
   return (
-    <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
+    <main
+      className="flex min-h-[100dvh] w-full flex-col"
+      style={{ background: "var(--bg)" }}
+    >
       <header
-        className="flex h-20 shrink-0 items-center justify-between border-b px-6 md:px-12"
-        style={{ borderColor: "var(--border)" }}
+        className="flex h-[52px] shrink-0 items-center justify-between px-6"
+        style={{ borderBottom: "0.5px solid var(--border)" }}
       >
-        <Link href="/" className="font-label text-[10px]" style={{ color: "var(--text-muted)" }}>
-          ← OVERVIEW
+        <Link
+          href="/"
+          className="font-serif text-[18px] leading-none"
+          style={{ color: "var(--fg)" }}
+        >
+          ←
         </Link>
-        <span className="font-serif text-[28px]" style={{ color: "var(--text)" }}>
+        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>
           Settings
         </span>
-        <span className="font-label text-[10px]">&nbsp;</span>
+        <span className="w-5" />
       </header>
 
-      <div className="flex flex-col px-8 md:px-16 lg:px-32 py-8">
+      <div className="flex flex-col px-6 md:px-12 lg:px-32 py-4">
         {/* Appearance */}
-        <section className="flex flex-col gap-6 py-10">
-          <span className="font-label text-[9px]">APPEARANCE</span>
+        <section className="flex flex-col gap-5 py-8">
+          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+            APPEARANCE
+          </span>
           <button
             onClick={toggleTheme}
-            className="flex items-center justify-between w-full max-w-xs"
+            className="flex items-center gap-4 w-full max-w-xs"
           >
-            <span className="font-label text-[10px]" style={{ color: theme === "light" ? "var(--text)" : "var(--text-muted)" }}>
-              Light mode
-            </span>
-            <div
-              className="relative w-12 h-6 rounded-full transition-colors duration-200"
-              style={{ background: "var(--border)" }}
+            <span
+              className="font-label text-[9px]"
+              style={{ color: theme === "light" ? "var(--fg)" : "var(--muted)" }}
             >
+              LIGHT MODE
+            </span>
+            <div className="relative flex-1 h-px" style={{ background: "var(--border)" }}>
               <div
-                className="absolute top-0.5 h-5 w-5 rounded-full transition-transform duration-200"
+                className="absolute top-1/2 -translate-y-1/2 h-3 w-3 rounded-full transition-all duration-200"
                 style={{
-                  background: "var(--text)",
-                  transform: theme === "dark" ? "translateX(26px)" : "translateX(2px)",
+                  background: "var(--fg)",
+                  left: theme === "dark" ? "calc(100% - 12px)" : "0px",
                 }}
               />
             </div>
-            <span className="font-label text-[10px]" style={{ color: theme === "dark" ? "var(--text)" : "var(--text-muted)" }}>
-              Dark mode
+            <span
+              className="font-label text-[9px]"
+              style={{ color: theme === "dark" ? "var(--fg)" : "var(--muted)" }}
+            >
+              DARK MODE
             </span>
           </button>
         </section>
 
         {/* Connected apps */}
         <section
-          className="flex flex-col gap-4 py-10"
+          className="flex flex-col gap-4 py-8"
           style={{ borderTop: "0.5px solid var(--border)" }}
         >
-          <span className="font-label text-[9px]">CONNECTED APPS</span>
+          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+            CONNECTED APPS
+          </span>
           <ul className="flex flex-col">
             {APPS.map((a, i) => (
               <li
                 key={a.id}
-                className="flex items-center justify-between py-4"
+                className="flex items-center justify-between py-3"
                 style={{ borderTop: i > 0 ? "0.5px solid var(--border)" : "none" }}
               >
-                <span className="text-[14px] font-light" style={{ color: "var(--text)" }}>
+                <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>
                   {a.name}
                 </span>
-                <span className="font-label text-[10px] hidden sm:inline">
+                <span
+                  className="font-label text-[9px] hidden sm:inline"
+                  style={{ color: "var(--muted)" }}
+                >
                   {a.url.replace(/^https?:\/\//, "")}
                 </span>
                 <div className="flex items-center gap-2">
                   <span
-                    className="inline-block h-2 w-2 rounded-full"
-                    style={{ background: a.colorVar }}
+                    className="inline-block h-1.5 w-1.5 rounded-full"
+                    style={{ background: "var(--fg)" }}
                   />
-                  <span className="font-label text-[9px]">LIVE</span>
+                  <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>
+                    LIVE
+                  </span>
                 </div>
               </li>
             ))}
@@ -95,11 +117,13 @@ export default function SettingsPage() {
 
         {/* Profile */}
         <section
-          className="flex flex-col gap-4 py-10"
+          className="flex flex-col gap-4 py-8"
           style={{ borderTop: "0.5px solid var(--border)" }}
         >
-          <span className="font-label text-[9px]">PROFILE</span>
-          <div className="flex flex-col gap-3">
+          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+            PROFILE
+          </span>
+          <div className="flex flex-col">
             <Row k="NAME" v="Richie Kid Novell" />
             <Row k="LOCATION" v="Hangzhou, China" />
             <Row k="TIMEZONE" v="CST (UTC+8)" />
@@ -108,11 +132,13 @@ export default function SettingsPage() {
 
         {/* Notifications */}
         <section
-          className="flex flex-col gap-4 py-10"
+          className="flex flex-col gap-4 py-8"
           style={{ borderTop: "0.5px solid var(--border)" }}
         >
-          <span className="font-label text-[9px]">NOTIFICATIONS</span>
-          <div className="flex flex-col gap-3">
+          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+            NOTIFICATIONS
+          </span>
+          <div className="flex flex-col">
             <Toggle label="Morning brief (8am)" />
             <Toggle label="Deadline alerts" />
             <Toggle label="Budget alerts" />
@@ -125,9 +151,12 @@ export default function SettingsPage() {
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex items-center justify-between py-2" style={{ borderBottom: "0.5px solid var(--border)" }}>
-      <span className="font-label text-[10px]">{k}</span>
-      <span className="text-[13px] font-light" style={{ color: "var(--text)" }}>{v}</span>
+    <div
+      className="flex items-center justify-between py-3"
+      style={{ borderBottom: "0.5px solid var(--border)" }}
+    >
+      <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>{k}</span>
+      <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>{v}</span>
     </div>
   );
 }
@@ -137,19 +166,16 @@ function Toggle({ label }: { label: string }) {
   return (
     <button
       onClick={() => setOn(!on)}
-      className="flex items-center justify-between py-2"
+      className="flex items-center justify-between py-3"
       style={{ borderBottom: "0.5px solid var(--border)" }}
     >
-      <span className="text-[13px] font-light" style={{ color: "var(--text)" }}>{label}</span>
-      <div
-        className="relative w-10 h-5 rounded-full transition-colors duration-200"
-        style={{ background: on ? "var(--text)" : "var(--border)" }}
-      >
+      <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>{label}</span>
+      <div className="relative w-8 h-px" style={{ background: "var(--border)" }}>
         <div
-          className="absolute top-0.5 h-4 w-4 rounded-full transition-transform duration-200"
+          className="absolute top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full transition-all duration-200"
           style={{
-            background: "var(--bg)",
-            transform: on ? "translateX(22px)" : "translateX(2px)",
+            background: on ? "var(--fg)" : "var(--muted)",
+            left: on ? "calc(100% - 10px)" : "0px",
           }}
         />
       </div>

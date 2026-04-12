@@ -52,64 +52,82 @@ export default function BriefPage() {
   const school = APPS.find((a) => a.id === "school")!;
 
   return (
-    <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
+    <main
+      className="flex min-h-[100dvh] w-full flex-col"
+      style={{ background: "var(--bg)" }}
+    >
       {/* Header */}
       <header
-        className="flex h-20 shrink-0 items-center justify-between border-b px-6 md:px-12"
-        style={{ borderColor: "var(--border)" }}
+        className="flex h-[52px] shrink-0 items-center justify-between px-6"
+        style={{ borderBottom: "0.5px solid var(--border)" }}
       >
-        <Link href="/" className="font-label text-[10px]" style={{ color: "var(--text-muted)" }}>
-          ← OVERVIEW
+        <Link
+          href="/"
+          className="font-serif text-[18px] leading-none"
+          style={{ color: "var(--fg)" }}
+          aria-label="Back to overview"
+        >
+          ←
         </Link>
-        <span className="font-serif text-[28px]" style={{ color: "var(--text)" }}>
+        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>
           Daily Brief
         </span>
-        <span className="font-label text-[10px]">&nbsp;</span>
+        <span className="w-5" />
       </header>
 
       {/* Sections */}
-      <div className="flex flex-col px-8 md:px-16 lg:px-32 py-8">
-        {SECTIONS.map((s, i) => {
-          const app = APPS.find((a) => a.id === s.appId)!;
-          return (
-            <section
-              key={s.appId}
-              className="flex flex-col gap-4 py-10"
-              style={{
-                borderTop: i > 0 ? "0.5px solid var(--border)" : "none",
-              }}
+      <div className="flex flex-col px-6 md:px-12 lg:px-32 py-4">
+        {SECTIONS.map((s, i) => (
+          <section
+            key={s.appId}
+            className="flex flex-col gap-3 py-8"
+            style={{
+              borderTop: i > 0 ? "0.5px solid var(--faint)" : "none",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ background: "var(--fg)" }}
+              />
+              <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>
+                {s.title}
+              </span>
+            </div>
+            <h2
+              className="font-serif text-[24px] leading-tight"
+              style={{ color: "var(--fg)" }}
             >
-              <div className="flex items-center gap-2">
-                <span
-                  className="inline-block h-2 w-2 rounded-full"
-                  style={{ background: app.colorVar }}
-                />
-                <span className="font-label text-[9px]">{s.title}</span>
-              </div>
-              <h2
-                className="font-serif text-[22px] md:text-[26px] leading-tight"
-                style={{ color: "var(--text)" }}
-              >
-                {s.headline}
-              </h2>
-              <div className="flex flex-col gap-1" style={{ color: "var(--text-dim)" }}>
-                {s.details.map((d) => (
-                  <p key={d} className="text-[13px] font-light leading-relaxed">{d}</p>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+              {s.headline}
+            </h2>
+            <div className="flex flex-col gap-0.5">
+              {s.details.map((d) => (
+                <p
+                  key={d}
+                  className="text-[13px] font-light"
+                  style={{ color: "var(--dim)", lineHeight: "1.7" }}
+                >
+                  {d}
+                </p>
+              ))}
+            </div>
+          </section>
+        ))}
 
         {/* Recommended action */}
         <section
-          className="flex flex-col gap-4 py-10 mt-4"
-          style={{ borderTop: "0.5px solid var(--border)" }}
+          className="flex flex-col gap-3 py-8 mt-2"
+          style={{ borderTop: "0.8px solid var(--fg)" }}
         >
-          <span className="font-label text-[9px]">// WHAT TO DO NOW</span>
+          <span
+            className="font-label text-[9px]"
+            style={{ color: "var(--muted)", letterSpacing: "0.2em" }}
+          >
+            // WHAT TO DO NOW
+          </span>
           <p
-            className="font-serif italic text-[20px] md:text-[24px] leading-snug"
-            style={{ color: "var(--text)" }}
+            className="font-serif italic text-[17px] leading-snug"
+            style={{ color: "var(--fg)" }}
           >
             Open R2·SCHOOL.
             <br />
@@ -117,8 +135,11 @@ export default function BriefPage() {
           </p>
           <a
             href={school.url}
-            className="self-start font-label text-[11px] underline underline-offset-4 mt-2 transition-opacity hover:opacity-70"
-            style={{ color: "var(--text)" }}
+            className="self-start font-label text-[10px] underline mt-2"
+            style={{
+              color: "var(--fg)",
+              textUnderlineOffset: "3px",
+            }}
           >
             → OPEN R2·SCHOOL
           </a>

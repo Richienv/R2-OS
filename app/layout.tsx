@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 
@@ -12,17 +12,24 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "R2·OS",
   description: "Your life. One screen.",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "R2·OS",
+  },
 };
 
-export const viewport = {
+export const viewport: Viewport = {
   themeColor: "#F2F0EB",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const themeScript = `(function(){var t=localStorage.getItem('r2os-theme')||'light';document.documentElement.setAttribute('data-theme',t)})()`;
+  const themeScript = `(function(){var t=localStorage.getItem('r2os-theme')||'light';document.documentElement.setAttribute('data-theme',t);document.querySelector('meta[name=theme-color]')?.setAttribute('content',t==='dark'?'#080808':'#F2F0EB')})()`;
   return (
     <html lang="en" className={playfair.variable} suppressHydrationWarning>
       <head>
