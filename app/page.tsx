@@ -1,24 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { APPS, digestItems, greetingFor } from "@/lib/apps";
+import { useEffect, useState } from "react";
+import { APPS, getMostUrgent, greetingFor, greetingLabel } from "@/lib/apps";
+import type { AppSummary } from "@/lib/apps";
 
 function formatHeader(d: Date) {
   const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-  const start = new Date(d.getFullYear(), 0, 1);
-  const week = Math.ceil((((d.getTime() - start.getTime()) / 86400000) + start.getDay() + 1) / 7);
   const hh = d.getHours();
   const mm = d.getMinutes().toString().padStart(2, "0");
   const ampm = hh >= 12 ? "PM" : "AM";
   const h12 = ((hh + 11) % 12) + 1;
-  return `WK ${week} · ${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()} · ${h12}:${mm} ${ampm}`;
+  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}  ·  ${h12}:${mm} ${ampm}`;
 }
 
 export default function HubPage() {
   const [now, setNow] = useState<Date | null>(null);
-  const [digestIdx, setDigestIdx] = useState(0);
 
   useEffect(() => {
     setNow(new Date());
@@ -26,104 +24,180 @@ export default function HubPage() {
     return () => clearInterval(t);
   }, []);
 
-  const digest = useMemo(() => digestItems(APPS), []);
-
-  useEffect(() => {
-    if (digest.length <= 1) return;
-    const t = setInterval(() => setDigestIdx((i) => (i + 1) % digest.length), 4000);
-    return () => clearInterval(t);
-  }, [digest.length]);
-
   const greeting = now ? greetingFor(now.getHours()) : "\u00a0";
+  const label = now ? greetingLabel(now.getHours()) : "\u00a0";
   const headerTime = now ? formatHeader(now) : "\u00a0";
-  const current = digest[digestIdx];
+  const urgent = getMostUrgent(APPS);
+  const isDesktop = typeof window !== "undefined" && window.innerWidth >= 768;
 
   return (
-    <main className="flex h-[100dvh] w-full flex-col bg-bg text-text">
-      <header className="flex h-20 shrink-0 items-center justify-between px-6">
-        <Link href="/settings" className="font-display text-[28px] leading-none text-text">
+    <main className="flex h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
+      {/* ─── HEADER ─── */}
+      <header
+        className="flex h-20 shrink-0 items-center justify-between border-b px-6 md:px-12"
+        style={{ borderColor: "var(--border)" }}
+      >
+        <Link href="/settings" className="font-serif text-[20px]" style={{ color: "var(--text)" }}>
           R2·OS
         </Link>
-        <div className="font-mono text-[11px] tracking-wider text-muted">{headerTime}</div>
+        <span className="font-label">{headerTime}</span>
       </header>
 
+      {/* ─── GREETING ─── */}
       <Link
         href="/brief"
-        className="flex shrink-0 flex-col gap-4 px-6 pb-6 pt-2 transition active:opacity-70"
+        className="flex shrink-0 flex-col items-center justify-center border-b py-8 md:py-12 transition-colors"
+        style={{ borderColor: "var(--border)" }}
       >
-        <div className="font-display text-[32px] leading-none text-text/90">{greeting}</div>
-        {current && (
-          <div
-            key={digestIdx}
-            className="font-display text-[40px] leading-[1.05] tracking-tight sm:text-[48px]"
-            style={{ color: current.color }}
-          >
-            {current.icon} {current.text}
-          </div>
-        )}
+        <span className="font-label text-[9px] animate-fade-in">{label}</span>
+        <span
+          className="font-serif text-[36px] md:text-[52px] leading-[1.1] mt-3 animate-fade-in-delay"
+          style={{ color: "var(--text)" }}
+        >
+          {greeting}
+        </span>
       </Link>
 
-      <section className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2 gap-3 px-4 pb-4">
-        {APPS.map((app) => (
-          <AppCard key={app.id} app={app} />
+      {/* ─── INTELLIGENCE STRIP ─── */}
+      <div
+        className="flex h-16 shrink-0 items-center border-b px-6 md:px-12"
+        style={{ borderColor: "var(--border)" }}
+      >
+        {urgent ? (
+          <div className="flex w-full items-center justify-between">
+            <span
+              className="font-label text-[9px]"
+              style={{
+                color:
+                  urgent.urgency === "urgent"
+                    ? "var(--r2finance)"
+                    : urgent.urgency === "warning"
+                      ? "#C49A2A"
+                      : "var(--text-muted)",
+              }}
+            >
+              {urgent.urgency.toUpperCase()}
+            </span>
+            <span
+              className="font-serif italic text-[16px] md:text-[18px] animate-fade-in"
+              style={{ color: "var(--text)" }}
+            >
+              {urgent.alertMessage}
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="font-label text-[9px]">{urgent.name}</span>
+              <span
+                className="inline-block h-2 w-2 rounded-full"
+                style={{ background: urgent.colorVar }}
+              />
+            </span>
+          </div>
+        ) : (
+          <span className="font-label text-[9px] mx-auto">// ALL CLEAR</span>
+        )}
+      </div>
+
+      {/* ─── APP GRID ─── */}
+      <section className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2">
+        {APPS.map((app, i) => (
+          <AppCell key={app.id} app={app} index={i} isDesktop={isDesktop} />
         ))}
       </section>
 
-      <footer className="flex h-16 shrink-0 items-center justify-between border-t border-border px-6">
-        <span className="font-mono text-[10px] tracking-widest text-muted">
-          R2·OS v1.0 · ALL SYSTEMS ACTIVE
-        </span>
-        <div className="flex items-center gap-2">
+      {/* ─── FOOTER ─── */}
+      <footer
+        className="flex h-12 shrink-0 items-center justify-between border-t px-6 md:px-12"
+        style={{ borderColor: "var(--border)" }}
+      >
+        <span className="font-label text-[9px]">R2·OS v1.0</span>
+        <div className="flex items-center gap-3">
           {APPS.map((a) => (
             <span
               key={a.id}
-              className="h-2 w-2 rounded-full pulse-dot"
-              style={{ background: a.color }}
-              aria-label={a.name}
+              className="h-2 w-2 rounded-full"
+              style={{ background: a.colorVar }}
             />
           ))}
         </div>
+        <span className="font-label text-[9px]">ALL SYSTEMS ACTIVE</span>
       </footer>
+
+      {/* ─── MOBILE NAV ─── */}
+      <nav
+        className="flex h-14 shrink-0 items-center justify-around border-t md:hidden"
+        style={{ borderColor: "var(--border)", background: "var(--bg)" }}
+      >
+        <span className="font-label text-[8px]" style={{ color: "var(--text)" }}>HOME</span>
+        <Link href="/brief" className="font-label text-[8px]">BRIEF</Link>
+        <span className="font-label text-[8px]">APPS</span>
+        <Link href="/settings" className="font-label text-[8px]">SET</Link>
+      </nav>
     </main>
   );
 }
 
-function AppCard({ app }: { app: (typeof APPS)[number] }) {
-  const borderColor = app.alert ? app.color : "#2A2A3D";
-  return (
-    <Link
-      href={app.url}
-      className="relative flex min-h-0 flex-col justify-between rounded-xl bg-surface2 p-4 transition active:scale-[0.98]"
-      style={{ border: `0.5px solid ${borderColor}` }}
-    >
-      <div className="flex items-start justify-between">
-        <span className="text-[22px] leading-none">{app.emoji}</span>
-        <span
-          className="h-2 w-2 rounded-full"
-          style={{ background: app.color, boxShadow: `0 0 12px ${app.color}80` }}
-        />
-      </div>
+function AppCell({ app, index, isDesktop }: { app: AppSummary; index: number; isDesktop: boolean }) {
+  const isRight = index % 2 === 1;
+  const isBottom = index >= 2;
 
+  const borders: React.CSSProperties = {
+    borderRight: isRight ? "none" : "0.5px solid var(--border)",
+    borderBottom: isBottom ? "none" : "0.5px solid var(--border)",
+  };
+
+  const urgentBorder: React.CSSProperties =
+    app.alert && app.urgency === "urgent"
+      ? { borderTop: `1px solid ${app.colorVar}` }
+      : {};
+
+  return (
+    <a
+      href={app.url}
+      target={isDesktop ? "_blank" : "_self"}
+      rel="noopener"
+      className="group relative flex flex-col justify-between p-5 md:p-8 transition-colors duration-150"
+      style={{
+        ...borders,
+        ...urgentBorder,
+        background: "var(--bg)",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.background = "var(--surface)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.background = "var(--bg)";
+      }}
+    >
       {app.alert && app.urgency === "urgent" && (
-        <span className="absolute right-3 top-3 h-2 w-2 rounded-full bg-r2finance pulse-dot" />
+        <div
+          className="absolute inset-x-0 top-0 h-px border-pulse"
+          style={{ background: app.colorVar }}
+        />
       )}
 
-      <div className="flex flex-col gap-1">
-        <div
-          className="font-display text-[30px] leading-none sm:text-[34px]"
-          style={{ color: app.color }}
-        >
-          {app.metric}
-        </div>
-        <div className="font-mono text-[10px] uppercase tracking-widest text-muted">
-          {app.label}
-        </div>
+      <div className="flex items-center gap-2">
+        <span
+          className="inline-block h-2 w-2 rounded-full"
+          style={{ background: app.colorVar }}
+        />
+        <span className="font-label text-[9px]">{app.name}</span>
       </div>
 
-      <div className="mt-2 flex items-center gap-2">
-        <span className="h-1.5 w-1.5 rounded-full" style={{ background: app.color }} />
-        <span className="font-mono text-[10px] tracking-widest text-muted">{app.name}</span>
+      <div className="flex flex-col gap-1 mt-auto mb-auto">
+        <span
+          className="font-serif text-[36px] md:text-[48px] leading-none"
+          style={{ color: app.alert && app.urgency === "urgent" ? app.colorVar : "var(--text)" }}
+        >
+          {app.metric}
+        </span>
+        <span className="font-label text-[9px] mt-1">{app.unit}</span>
       </div>
-    </Link>
+
+      <div className="flex justify-end">
+        <span className="font-label text-[10px] opacity-0 transition-opacity duration-150 group-hover:opacity-100 md:opacity-30">
+          → OPEN
+        </span>
+      </div>
+    </a>
   );
 }

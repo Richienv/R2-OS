@@ -2,26 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg: #0A0A0F;
-  --surface: #12121A;
-  --surface2: #1A1A26;
-  --border: #2A2A3D;
-  --accent: #CC785C;
-  --accent2: #7B68EE;
-  --text: #F0EEE6;
-  --muted: #666655;
+:root,
+[data-theme="light"] {
+  --bg: #F2F0EB;
+  --surface: #ECEAE4;
+  --border: #D8D5CE;
+  --text: #0A0A0A;
+  --text-dim: rgba(10, 10, 10, 0.6);
+  --text-muted: rgba(10, 10, 10, 0.3);
+  --accent: #0A0A0A;
   --r2fit: #E8FF47;
   --r2school: #2D7DD2;
   --r2finance: #E53935;
-  --r2build: #FFFFFF;
+  --r2build: #0A0A0A;
+}
+
+[data-theme="dark"] {
+  --bg: #080808;
+  --surface: #111111;
+  --border: #222222;
+  --text: #F2F0EB;
+  --text-dim: rgba(242, 240, 235, 0.6);
+  --text-muted: rgba(242, 240, 235, 0.3);
+  --accent: #F2F0EB;
+  --r2fit: #E8FF47;
+  --r2school: #2D7DD2;
+  --r2finance: #E53935;
+  --r2build: #F2F0EB;
 }
 
 html, body {
   background: var(--bg);
   color: var(--text);
-  font-family: "DM Sans", system-ui, sans-serif;
+  font-family: -apple-system, "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 300;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overscroll-behavior: none;
 }
 
@@ -29,17 +45,52 @@ body {
   min-height: 100dvh;
 }
 
-.font-display {
-  font-family: Impact, "Haettenschweiler", "Arial Narrow Bold", sans-serif;
-  letter-spacing: 0.02em;
+.font-serif {
+  font-family: var(--font-playfair), Georgia, serif;
+  letter-spacing: -0.02em;
+  font-weight: 400;
 }
 
-.font-mono {
-  font-family: "DM Mono", ui-monospace, monospace;
+.font-label {
+  font-family: "SF Mono", "Courier New", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
 }
 
-@keyframes pulseDot {
+.border-rule {
+  border-color: var(--border);
+  border-width: 0.5px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes borderPulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  50% { opacity: 0.3; }
 }
-.pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+
+.animate-fade-in {
+  animation: fadeIn 600ms ease-out both;
+}
+
+.animate-fade-in-delay {
+  animation: fadeIn 600ms ease-out 200ms both;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 600ms ease-out both;
+}
+
+.border-pulse {
+  animation: borderPulse 3s ease-in-out infinite;
+}

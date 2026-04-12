@@ -1,37 +1,34 @@
 import type { Metadata } from "next";
-import { DM_Sans, DM_Mono } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 import "./globals.css";
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-dm-sans",
-  display: "swap",
-});
-
-const dmMono = DM_Mono({
+const playfair = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "500"],
-  variable: "--font-dm-mono",
+  variable: "--font-playfair",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "R2·OS — Your life. One screen.",
-  description: "Richie's personal operating system. Master hub for all R2 apps.",
+  title: "R2·OS",
+  description: "Your life. One screen.",
 };
 
 export const viewport = {
-  themeColor: "#0A0A0F",
+  themeColor: "#F2F0EB",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const themeScript = `(function(){var t=localStorage.getItem('r2os-theme')||'light';document.documentElement.setAttribute('data-theme',t)})()`;
   return (
-    <html lang="en" className={`${dmSans.variable} ${dmMono.variable}`}>
-      <body className="antialiased">{children}</body>
+    <html lang="en" className={playfair.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
