@@ -41,86 +41,61 @@ export default function BriefPage() {
   return (
     <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-6"
-        style={{ borderBottom: "0.5px solid var(--border)" }}
+        className="flex h-[52px] shrink-0 items-center justify-between px-5"
+        style={{ borderBottom: "0.5px solid var(--line)" }}
       >
-        <Link href="/" className="font-serif text-[18px]" style={{ color: "var(--fg)" }}>
+        <Link href="/" style={{ color: "var(--text)", fontSize: 18, fontWeight: 600 }}>
           &larr;
         </Link>
-        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>Daily Brief</span>
+        <span style={{ color: "var(--text)", fontSize: 24, fontWeight: 600 }}>Daily Brief</span>
         <span className="w-11" />
       </header>
 
-      <div className="flex flex-col gap-px px-4 py-4 md:px-8 lg:px-24">
-        {SECTIONS.map((s) => (
+      <div className="flex flex-col px-5 md:px-8 lg:px-24">
+        {SECTIONS.map((s, i) => (
           <section
             key={s.appId}
-            className="flex flex-col overflow-hidden"
-            style={{ border: "0.5px solid var(--border)" }}
+            className="flex flex-col gap-2 py-7"
+            style={{ borderTop: i > 0 ? "0.5px solid var(--line)" : "none" }}
           >
-            {/* Dark section bar */}
-            <div
-              className="flex h-8 items-center px-3.5"
-              style={{ background: "var(--fg)" }}
-            >
-              <span className="font-label text-[8px]" style={{ color: "var(--bg)", opacity: 0.7 }}>
-                {s.title}
-              </span>
-            </div>
-
-            {/* Content */}
-            <div className="flex flex-col gap-2 px-3.5 py-4">
-              <h2
-                className="font-serif text-[24px] leading-tight"
-                style={{ color: "var(--fg)" }}
-              >
-                {s.headline}
-              </h2>
-              <div className="flex flex-col gap-0.5">
-                {s.details.map((d) => (
-                  <p
-                    key={d}
-                    className="text-[13px] font-light"
-                    style={{ color: "var(--dim)", lineHeight: "1.7" }}
-                  >
-                    {d}
-                  </p>
-                ))}
-              </div>
+            <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
+              {s.title}
+            </span>
+            <h2 style={{ color: "var(--text)", fontSize: 18, fontWeight: 500, lineHeight: 1.3 }}>
+              {s.headline}
+            </h2>
+            <div className="flex flex-col gap-0.5">
+              {s.details.map((d) => (
+                <p key={d} style={{ color: "var(--text-muted)", fontSize: 13, lineHeight: 1.6 }}>
+                  {d}
+                </p>
+              ))}
             </div>
           </section>
         ))}
 
-        {/* Recommended action */}
         <section
-          className="flex flex-col overflow-hidden mt-4"
-          style={{ border: "0.5px solid var(--border)" }}
+          className="flex flex-col gap-3 py-7"
+          style={{ borderTop: "1px solid var(--line-strong)" }}
         >
-          <div
-            className="flex h-8 items-center px-3.5"
-            style={{ background: "var(--fg)" }}
+          <span style={{ color: "var(--text)", fontSize: 15, fontWeight: 500 }}>
+            &rarr; Open R2·SCHOOL
+          </span>
+          <span style={{ color: "var(--text-muted)", fontSize: 13 }}>
+            Your IB presentation is in 4 days.
+          </span>
+          <a
+            href={school.url}
+            className="cell-press self-start mt-1 px-4 py-2"
+            style={{
+              color: "var(--bg)",
+              background: "var(--text)",
+              fontSize: 11,
+              fontWeight: 500,
+            }}
           >
-            <span className="font-label text-[8px]" style={{ color: "var(--bg)", opacity: 0.7 }}>
-              // WHAT TO DO NOW
-            </span>
-          </div>
-          <div className="flex flex-col gap-3 px-3.5 py-4">
-            <p
-              className="font-serif italic text-[17px] leading-snug"
-              style={{ color: "var(--fg)" }}
-            >
-              Open R2·SCHOOL.
-              <br />
-              Your IB presentation is in 4 days.
-            </p>
-            <a
-              href={school.url}
-              className="self-start font-label text-[10px] underline"
-              style={{ color: "var(--fg)", textUnderlineOffset: "3px" }}
-            >
-              &rarr; OPEN R2·SCHOOL
-            </a>
-          </div>
+            OPEN R2·SCHOOL
+          </a>
         </section>
       </div>
     </main>

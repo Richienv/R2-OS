@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { APPS } from "@/lib/apps";
 import type { Translation } from "@/lib/verses";
 
@@ -13,25 +13,10 @@ const TRANSLATIONS: { key: Translation; label: string }[] = [
 ];
 
 export default function SettingsPage() {
-  const [theme, setTheme] = useState("light");
-  const [translation, setTranslationState] = useState<Translation>("esv");
-
-  useEffect(() => {
-    setTheme(document.documentElement.getAttribute("data-theme") || "light");
-    setTranslationState(
-      (localStorage.getItem("r2os-translation") as Translation) || "esv"
-    );
-  }, []);
-
-  function toggleTheme() {
-    const next = theme === "light" ? "dark" : "light";
-    setTheme(next);
-    document.documentElement.setAttribute("data-theme", next);
-    localStorage.setItem("r2os-theme", next);
-    document
-      .querySelector('meta[name="theme-color"]')
-      ?.setAttribute("content", next === "dark" ? "#080808" : "#F2F0EB");
-  }
+  const [translation, setTranslationState] = useState<Translation>(() => {
+    if (typeof window === "undefined") return "esv";
+    return (localStorage.getItem("r2os-translation") as Translation) || "esv";
+  });
 
   function setTranslation(t: Translation) {
     setTranslationState(t);
@@ -41,74 +26,32 @@ export default function SettingsPage() {
   return (
     <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-6"
-        style={{ borderBottom: "0.5px solid var(--border)" }}
+        className="flex h-[52px] shrink-0 items-center justify-between px-5"
+        style={{ borderBottom: "0.5px solid var(--line)" }}
       >
-        <Link
-          href="/"
-          className="flex h-11 w-11 items-center justify-start font-serif text-[18px]"
-          style={{ color: "var(--fg)" }}
-        >
+        <Link href="/" style={{ color: "var(--text)", fontSize: 18, fontWeight: 600 }}>
           &larr;
         </Link>
-        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>
-          Settings
-        </span>
+        <span style={{ color: "var(--text)", fontSize: 24, fontWeight: 600 }}>Settings</span>
         <span className="w-11" />
       </header>
 
-      <div className="flex flex-col px-6 md:px-12 lg:px-32 py-4">
-        {/* Appearance */}
-        <section className="flex flex-col gap-5 py-8">
-          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
-            APPEARANCE
-          </span>
-          <button
-            onClick={toggleTheme}
-            className="flex items-center gap-4 w-full max-w-xs"
-          >
-            <span
-              className="font-label text-[9px]"
-              style={{ color: theme === "light" ? "var(--fg)" : "var(--muted)" }}
-            >
-              LIGHT MODE
-            </span>
-            <div className="relative flex-1 h-px" style={{ background: "var(--border)" }}>
-              <div
-                className="absolute top-1/2 -translate-y-1/2 h-3 w-3 rounded-full transition-all duration-200"
-                style={{
-                  background: "var(--fg)",
-                  left: theme === "dark" ? "calc(100% - 12px)" : "0px",
-                }}
-              />
-            </div>
-            <span
-              className="font-label text-[9px]"
-              style={{ color: theme === "dark" ? "var(--fg)" : "var(--muted)" }}
-            >
-              DARK MODE
-            </span>
-          </button>
-        </section>
-
+      <div className="flex flex-col px-5 md:px-8 lg:px-24">
         {/* Bible translation */}
-        <section
-          className="flex flex-col gap-4 py-8"
-          style={{ borderTop: "0.5px solid var(--border)" }}
-        >
-          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+        <section className="flex flex-col gap-4 py-7">
+          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
             BIBLE TRANSLATION
           </span>
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             {TRANSLATIONS.map((t) => (
               <button
                 key={t.key}
                 onClick={() => setTranslation(t.key)}
-                className="font-label text-[10px] px-3 py-2 transition-colors duration-150"
+                className="font-label text-[10px] px-3 py-1.5 transition-colors duration-100"
                 style={{
-                  color: translation === t.key ? "var(--bg)" : "var(--muted)",
-                  background: translation === t.key ? "var(--fg)" : "transparent",
-                  border: `0.5px solid ${translation === t.key ? "var(--fg)" : "var(--border)"}`,
+                  color: translation === t.key ? "var(--bg)" : "var(--text-muted)",
+                  background: translation === t.key ? "var(--text)" : "transparent",
+                  border: `0.5px solid ${translation === t.key ? "var(--text)" : "var(--line)"}`,
                 }}
               >
                 {t.label}
@@ -119,10 +62,10 @@ export default function SettingsPage() {
 
         {/* Connected apps */}
         <section
-          className="flex flex-col gap-4 py-8"
-          style={{ borderTop: "0.5px solid var(--border)" }}
+          className="flex flex-col gap-4 py-7"
+          style={{ borderTop: "0.5px solid var(--line)" }}
         >
-          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
             CONNECTED APPS
           </span>
           <ul className="flex flex-col">
@@ -130,13 +73,13 @@ export default function SettingsPage() {
               <li
                 key={a.id}
                 className="flex items-center justify-between py-3"
-                style={{ borderTop: i > 0 ? "0.5px solid var(--border)" : "none" }}
+                style={{ borderTop: i > 0 ? "0.5px solid var(--line)" : "none" }}
               >
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>
+                  <span style={{ fontSize: 13, fontWeight: 400, color: "var(--text)" }}>
                     {a.name}
                   </span>
-                  <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+                  <span className="font-label text-[9px]" style={{ color: "#444" }}>
                     {a.url.replace(/^https?:\/\//, "")}
                   </span>
                 </div>
@@ -145,7 +88,7 @@ export default function SettingsPage() {
                   target="_blank"
                   rel="noopener"
                   className="font-label text-[9px]"
-                  style={{ color: "var(--dim)" }}
+                  style={{ color: "var(--text-dim)" }}
                 >
                   OPEN &rarr;
                 </a>
@@ -156,10 +99,10 @@ export default function SettingsPage() {
 
         {/* Profile */}
         <section
-          className="flex flex-col gap-4 py-8"
-          style={{ borderTop: "0.5px solid var(--border)" }}
+          className="flex flex-col gap-4 py-7"
+          style={{ borderTop: "0.5px solid var(--line)" }}
         >
-          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
             PROFILE
           </span>
           <div className="flex flex-col">
@@ -171,10 +114,10 @@ export default function SettingsPage() {
 
         {/* Notifications */}
         <section
-          className="flex flex-col gap-4 py-8"
-          style={{ borderTop: "0.5px solid var(--border)" }}
+          className="flex flex-col gap-4 py-7"
+          style={{ borderTop: "0.5px solid var(--line)" }}
         >
-          <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
             NOTIFICATIONS
           </span>
           <div className="flex flex-col">
@@ -192,10 +135,10 @@ function Row({ k, v }: { k: string; v: string }) {
   return (
     <div
       className="flex items-center justify-between py-3"
-      style={{ borderBottom: "0.5px solid var(--border)" }}
+      style={{ borderBottom: "0.5px solid var(--line)" }}
     >
-      <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>{k}</span>
-      <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>{v}</span>
+      <span className="font-label text-[9px]" style={{ color: "#444" }}>{k}</span>
+      <span style={{ fontSize: 13, color: "var(--text)" }}>{v}</span>
     </div>
   );
 }
@@ -206,15 +149,18 @@ function Toggle({ label }: { label: string }) {
     <button
       onClick={() => setOn(!on)}
       className="flex items-center justify-between py-3"
-      style={{ borderBottom: "0.5px solid var(--border)" }}
+      style={{ borderBottom: "0.5px solid var(--line)" }}
     >
-      <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>{label}</span>
-      <div className="relative w-8 h-px" style={{ background: "var(--border)" }}>
+      <span style={{ fontSize: 13, color: "var(--text)" }}>{label}</span>
+      <div
+        className="relative w-9 h-5 rounded-full transition-colors duration-200"
+        style={{ background: on ? "var(--text)" : "var(--line)" }}
+      >
         <div
-          className="absolute top-1/2 -translate-y-1/2 h-2.5 w-2.5 rounded-full transition-all duration-200"
+          className="absolute top-0.5 h-4 w-4 rounded-full transition-transform duration-200"
           style={{
-            background: on ? "var(--fg)" : "var(--muted)",
-            left: on ? "calc(100% - 10px)" : "0px",
+            background: "var(--bg)",
+            transform: on ? "translateX(18px)" : "translateX(2px)",
           }}
         />
       </div>

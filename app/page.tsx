@@ -40,6 +40,7 @@ export default function HubPage() {
   const [verseFade, setVerseFade] = useState(true);
   const [translation, setTranslation] = useState<Translation>("esv");
   const [copied, setCopied] = useState(false);
+  const [verseExpanded, setVerseExpanded] = useState(false);
 
   useEffect(() => {
     setNow(new Date());
@@ -77,72 +78,16 @@ export default function HubPage() {
     <main className="flex h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       {/* Header */}
       <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-6"
-        style={{ borderBottom: "0.5px solid var(--border)" }}
+        className="flex h-[52px] shrink-0 items-center justify-between px-5"
+        style={{ borderBottom: "0.5px solid var(--line)" }}
       >
-        <Link href="/settings" className="font-serif text-[18px]" style={{ color: "var(--fg)" }}>
+        <Link href="/settings" style={{ color: "var(--text)", fontWeight: 600, fontSize: 18 }}>
           R2·OS
         </Link>
-        <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+        <span className="font-label text-[9px]" style={{ color: "#444" }}>
           {headerTime}
         </span>
       </header>
-
-      {/* Bible verse */}
-      <section
-        className="flex shrink-0 flex-col px-6 py-5"
-        style={{ borderBottom: "0.5px solid var(--border)" }}
-      >
-        <span
-          className="font-label text-[8px] mb-3"
-          style={{ color: "var(--faint)", letterSpacing: "3px" }}
-        >
-          // SCRIPTURE
-        </span>
-
-        <div
-          className="verse-fade"
-          style={{ opacity: verseFade ? 1 : 0 }}
-          onContextMenu={(e) => { e.preventDefault(); copyVerse(); }}
-          onClick={() => { if (typeof window !== "undefined" && !("ontouchstart" in window)) copyVerse(); }}
-        >
-          <p
-            className="font-serif italic text-[15px] leading-[1.65]"
-            style={{ color: "var(--fg)" }}
-          >
-            &ldquo;{verse[translation]}&rdquo;
-          </p>
-          <p className="font-label text-[9px] mt-2" style={{ color: "var(--muted)" }}>
-            &mdash; {verse.ref}
-          </p>
-        </div>
-
-        {copied && (
-          <span className="font-label text-[9px] mt-2 animate-fade-in" style={{ color: "var(--dim)" }}>
-            Copied.
-          </span>
-        )}
-
-        <div className="flex items-center justify-between mt-4">
-          <button
-            onClick={() => changeVerse(-1)}
-            className="flex h-11 w-11 items-center justify-center"
-            aria-label="Previous verse"
-          >
-            <span className="font-serif text-[18px]" style={{ color: "var(--muted)" }}>&lsaquo;</span>
-          </button>
-          <span className="font-label text-[9px]" style={{ color: "var(--faint)" }}>
-            {verseIdx + 1} / {VERSES.length}
-          </span>
-          <button
-            onClick={() => changeVerse(1)}
-            className="flex h-11 w-11 items-center justify-center"
-            aria-label="Next verse"
-          >
-            <span className="font-serif text-[18px]" style={{ color: "var(--muted)" }}>&rsaquo;</span>
-          </button>
-        </div>
-      </section>
 
       {/* Urgent strip */}
       {urgent && (
@@ -150,23 +95,56 @@ export default function HubPage() {
           href={urgent.url}
           target={isMobile ? "_self" : "_blank"}
           rel="noopener"
-          className="cell-press flex h-11 shrink-0 items-center justify-between px-6 cursor-pointer"
+          className="cell-press flex h-10 shrink-0 items-center px-5 cursor-pointer"
           style={{
-            borderTop: "1.5px solid var(--border-strong)",
-            borderBottom: "0.5px solid var(--border)",
+            borderTop: "1px solid var(--line-strong)",
+            borderBottom: "0.5px solid var(--line)",
           }}
         >
-          <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>URGENT</span>
-          <span className="font-serif italic text-[14px]" style={{ color: "var(--fg)" }}>
-            {urgent.alertMessage}
-          </span>
-          <span className="font-label text-[8px]" style={{ color: "var(--muted)" }}>
-            {urgent.name} &rsaquo;
+          <span style={{ color: "var(--text-dim)", fontSize: 12, fontWeight: 400 }}>
+            ⚡ {urgent.alertMessage} → {urgent.name}
           </span>
         </a>
       )}
 
-      {/* App grid */}
+      {/* Bible verse — centered hero */}
+      <section
+        className="flex shrink-0 flex-col items-center px-6 py-8 cursor-pointer"
+        style={{ borderBottom: "0.5px solid var(--line)" }}
+        onClick={() => setVerseExpanded(true)}
+      >
+        <div
+          className="verse-fade text-center"
+          style={{ opacity: verseFade ? 1 : 0, maxWidth: 340 }}
+        >
+          <p style={{ fontStyle: "italic", fontSize: 16, lineHeight: 1.7, color: "rgba(240,240,240,0.9)" }}>
+            &ldquo;{verse[translation]}&rdquo;
+          </p>
+          <p className="font-label text-[9px] mt-2.5" style={{ color: "var(--text-muted)" }}>
+            &mdash; {verse.ref}
+          </p>
+        </div>
+
+        {copied && (
+          <span className="font-label text-[9px] mt-2 animate-fade-in" style={{ color: "var(--text-dim)" }}>
+            Copied.
+          </span>
+        )}
+
+        <div className="flex items-center justify-center gap-6 mt-4">
+          <button onClick={(e) => { e.stopPropagation(); changeVerse(-1); }} className="flex h-11 w-11 items-center justify-center">
+            <span style={{ fontSize: 20, color: "var(--text-muted)" }}>&lsaquo;</span>
+          </button>
+          <span className="font-label text-[9px]" style={{ color: "var(--text-faint)" }}>
+            {verseIdx + 1} / {VERSES.length}
+          </span>
+          <button onClick={(e) => { e.stopPropagation(); changeVerse(1); }} className="flex h-11 w-11 items-center justify-center">
+            <span style={{ fontSize: 20, color: "var(--text-muted)" }}>&rsaquo;</span>
+          </button>
+        </div>
+      </section>
+
+      {/* App grid — dark cells, big names */}
       <section className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2">
         {APPS.map((app, i) => (
           <AppCell key={app.id} app={app} index={i} isMobile={isMobile} />
@@ -175,28 +153,83 @@ export default function HubPage() {
 
       {/* Footer */}
       <footer
-        className="flex h-10 shrink-0 items-center justify-between px-6"
-        style={{ borderTop: "0.5px solid var(--border)" }}
+        className="flex h-9 shrink-0 items-center justify-center gap-4 px-5"
+        style={{ borderTop: "0.5px solid var(--line)" }}
       >
-        <span className="font-label text-[8px]" style={{ color: "var(--faint)" }}>R2·OS V1.0</span>
-        <div className="flex items-center gap-3">
+        <span className="font-label text-[8px]" style={{ color: "#444" }}>R2·OS</span>
+        <div className="flex items-center gap-2">
           {APPS.map((a) => (
-            <span key={a.id} className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: "var(--fg)" }} />
+            <span key={a.id} className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: "#444" }} />
           ))}
         </div>
-        <span className="font-label text-[8px]" style={{ color: "var(--faint)" }}>ALL SYSTEMS ACTIVE</span>
+        <span className="font-label text-[8px]" style={{ color: "#444" }}>V1.0</span>
       </footer>
 
       {/* Mobile bottom nav */}
       <nav
-        className="flex h-[52px] shrink-0 items-center justify-around md:hidden"
-        style={{ borderTop: "0.5px solid var(--border)", background: "var(--bg)" }}
+        className="flex h-14 shrink-0 items-center justify-around md:hidden"
+        style={{ borderTop: "0.5px solid var(--line)", background: "var(--bg)" }}
       >
-        <span className="font-label text-[9px]" style={{ color: "var(--fg)" }}>HOME</span>
-        <Link href="/brief" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>BRIEF</Link>
-        <Link href="/apps" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>APPS</Link>
-        <Link href="/settings" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>SET</Link>
+        <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text)" }}>HOME</span>
+        <Link href="/brief" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>BRIEF</Link>
+        <Link href="/apps" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>APPS</Link>
+        <Link href="/settings" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>SET</Link>
       </nav>
+
+      {/* Verse expanded overlay */}
+      {verseExpanded && (
+        <div
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center px-8"
+          style={{ background: "var(--bg)" }}
+        >
+          <button
+            onClick={() => setVerseExpanded(false)}
+            className="absolute top-4 right-4 flex h-11 w-11 items-center justify-center"
+            style={{ color: "var(--text-muted)", fontSize: 20 }}
+          >
+            ✕
+          </button>
+
+          <span className="font-label text-[9px] mb-6" style={{ color: "#444", letterSpacing: "3px" }}>
+            // SCRIPTURE
+          </span>
+
+          <div className="verse-fade text-center" style={{ opacity: verseFade ? 1 : 0, maxWidth: 380 }}>
+            <p style={{ fontStyle: "italic", fontSize: 18, lineHeight: 1.8, color: "var(--text)" }}>
+              &ldquo;{verse[translation]}&rdquo;
+            </p>
+            <p className="font-label text-[10px] mt-4" style={{ color: "#444" }}>
+              &mdash; {verse.ref}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-center gap-6 mt-8">
+            <button onClick={() => changeVerse(-1)} className="flex h-11 w-11 items-center justify-center">
+              <span style={{ fontSize: 24, color: "var(--text-muted)" }}>&lsaquo;</span>
+            </button>
+            <span className="font-label text-[9px]" style={{ color: "var(--text-faint)" }}>
+              {verseIdx + 1} / {VERSES.length}
+            </span>
+            <button onClick={() => changeVerse(1)} className="flex h-11 w-11 items-center justify-center">
+              <span style={{ fontSize: 24, color: "var(--text-muted)" }}>&rsaquo;</span>
+            </button>
+          </div>
+
+          <button
+            onClick={copyVerse}
+            className="font-label text-[10px] underline mt-6"
+            style={{ color: "#444", textUnderlineOffset: 3 }}
+          >
+            COPY
+          </button>
+
+          {copied && (
+            <span className="font-label text-[9px] mt-2 animate-fade-in" style={{ color: "var(--text-dim)" }}>
+              Copied.
+            </span>
+          )}
+        </div>
+      )}
     </main>
   );
 }
@@ -206,56 +239,41 @@ function AppCell({ app, index, isMobile }: { app: AppSummary; index: number; isM
   const isBottom = index >= 2;
   const isUrgent = app.alert && app.urgency === "urgent";
 
+  const dataText = isUrgent && app.alertMessage
+    ? app.alertMessage
+    : `${app.metric} ${app.label.toLowerCase()}`;
+
   return (
     <a
       href={app.url}
       target={isMobile ? "_self" : "_blank"}
       rel="noopener"
-      className="cell-press group relative flex flex-col cursor-pointer"
+      className="cell-press flex flex-col justify-center px-5 py-5 cursor-pointer"
       style={{
-        borderRight: isRight ? "none" : "0.5px solid var(--border)",
-        borderBottom: isBottom ? "none" : "0.5px solid var(--border)",
+        background: "var(--bg)",
+        borderRight: isRight ? "none" : "1px solid var(--line)",
+        borderBottom: isBottom ? "none" : "1px solid var(--line)",
       }}
     >
-      {/* Dark title bar — 36px */}
-      <div
-        className="flex h-9 shrink-0 items-center justify-between px-3.5 transition-colors duration-100 group-hover:brightness-125"
-        style={{ background: "var(--fg)" }}
-      >
-        <span
-          className="font-serif text-[14px]"
-          style={{ color: "var(--bg)" }}
-        >
+      <div className="flex items-center justify-between">
+        <span style={{ fontSize: 28, fontWeight: 600, color: "var(--text)", lineHeight: 1.1 }}>
+          {isUrgent && <span style={{ marginRight: 6 }}>●</span>}
           {app.name}
         </span>
-        <span className="flex items-center gap-1.5">
-          {isUrgent && (
-            <span className="text-[10px]" style={{ color: "var(--bg)", opacity: 0.7 }}>⚡</span>
-          )}
-          <span
-            className="font-label text-[12px]"
-            style={{ color: "var(--bg)", opacity: 0.5 }}
-          >
-            &rsaquo;
-          </span>
+        <span className="font-label text-[18px]" style={{ color: "var(--text-muted)" }}>
+          &rsaquo;
         </span>
       </div>
-
-      {/* Metric area */}
-      <div className="flex flex-1 flex-col justify-center px-3.5 py-3">
-        <span
-          className="font-serif text-[48px] leading-none"
-          style={{ color: "var(--fg)", fontWeight: isUrgent ? 500 : 400 }}
-        >
-          {app.metric}
-        </span>
-        <span
-          className="font-label text-[8px] mt-1.5"
-          style={{ color: isUrgent ? "var(--fg)" : "var(--muted)" }}
-        >
-          {isUrgent && app.alertMessage ? app.alertMessage.toUpperCase() : app.label}
-        </span>
-      </div>
+      <span
+        style={{
+          fontSize: 13,
+          fontWeight: 400,
+          color: isUrgent ? "var(--text-dim)" : "var(--text-muted)",
+          marginTop: 6,
+        }}
+      >
+        {dataText}
+      </span>
     </a>
   );
 }

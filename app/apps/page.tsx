@@ -19,73 +19,55 @@ export default function AppsPage() {
   return (
     <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-6"
-        style={{ borderBottom: "0.5px solid var(--border)" }}
+        className="flex h-[52px] shrink-0 items-center justify-between px-5"
+        style={{ borderBottom: "0.5px solid var(--line)" }}
       >
-        <Link href="/" className="font-serif text-[18px]" style={{ color: "var(--fg)" }}>
+        <Link href="/" style={{ color: "var(--text)", fontSize: 18, fontWeight: 600 }}>
           &larr;
         </Link>
-        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>Apps</span>
+        <span style={{ color: "var(--text)", fontSize: 24, fontWeight: 600 }}>Apps</span>
         <span className="w-11" />
       </header>
 
-      <div className="flex flex-col gap-px px-4 py-4 md:px-8">
-        {APPS.map((app) => {
-          const statusText = app.alert
-            ? `⚡ ${app.alertMessage}`
-            : `${app.metric} ${app.label.toLowerCase()}`;
-
-          return (
+      <ul className="flex flex-col">
+        {APPS.map((app, i) => (
+          <li key={app.id} style={{ borderBottom: "0.5px solid var(--line)" }}>
             <a
-              key={app.id}
               href={app.url}
               target={isMobile ? "_self" : "_blank"}
               rel="noopener"
-              className="cell-press flex flex-col overflow-hidden"
-              style={{ border: "0.5px solid var(--border)" }}
+              className="cell-press flex h-[72px] items-center justify-between px-5"
             >
-              {/* Dark title bar */}
-              <div
-                className="flex h-8 items-center justify-between px-3.5"
-                style={{ background: "var(--fg)" }}
-              >
-                <span className="font-serif text-[14px]" style={{ color: "var(--bg)" }}>
+              <div className="flex flex-col gap-1">
+                <span style={{ fontSize: 20, fontWeight: 600, color: "var(--text)" }}>
                   {app.name}
                 </span>
-                <span className="font-label text-[9px]" style={{ color: "var(--bg)", opacity: 0.6 }}>
-                  OPEN &rarr;
-                </span>
-              </div>
-
-              {/* Content */}
-              <div className="flex flex-col gap-1 px-3.5 py-3">
-                <span
-                  className="font-label text-[10px]"
-                  style={{
-                    color: app.alert ? "var(--fg)" : "var(--dim)",
-                    fontWeight: app.alert ? 500 : 400,
-                  }}
-                >
-                  {statusText}
-                </span>
-                <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+                <span className="font-label text-[9px]" style={{ color: "#444" }}>
                   {app.url.replace(/^https?:\/\//, "")}
                 </span>
               </div>
+              <div className="flex flex-col items-end gap-1">
+                <span style={{ fontSize: 12, color: "var(--text-muted)" }}>
+                  {app.metric} {app.label.toLowerCase()}
+                </span>
+                <span className="font-label text-[10px]" style={{ color: "var(--text-muted)" }}>
+                  OPEN &rarr;
+                </span>
+              </div>
             </a>
-          );
-        })}
-      </div>
+          </li>
+        ))}
+      </ul>
 
       <div className="mt-auto">
         <nav
-          className="flex h-[52px] shrink-0 items-center justify-around md:hidden"
-          style={{ borderTop: "0.5px solid var(--border)", background: "var(--bg)" }}
+          className="flex h-14 shrink-0 items-center justify-around md:hidden"
+          style={{ borderTop: "0.5px solid var(--line)", background: "var(--bg)" }}
         >
-          <Link href="/" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>HOME</Link>
-          <Link href="/brief" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>BRIEF</Link>
-          <span className="font-label text-[9px]" style={{ color: "var(--fg)" }}>APPS</span>
-          <Link href="/settings" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>SET</Link>
+          <Link href="/" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>HOME</Link>
+          <Link href="/brief" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>BRIEF</Link>
+          <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text)" }}>APPS</span>
+          <Link href="/settings" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>SET</Link>
         </nav>
       </div>
     </main>

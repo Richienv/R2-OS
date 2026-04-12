@@ -2,49 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-:root,
-[data-theme="light"] {
-  --bg: #F2F0EB;
-  --fg: #0A0A0A;
-  --surface: rgba(10, 10, 10, 0.03);
-  --border: rgba(10, 10, 10, 0.12);
-  --border-strong: rgba(10, 10, 10, 0.25);
-  --dim: rgba(10, 10, 10, 0.5);
-  --muted: rgba(10, 10, 10, 0.3);
-  --faint: rgba(10, 10, 10, 0.15);
-}
-
-[data-theme="dark"] {
+:root {
   --bg: #080808;
-  --fg: #F2F0EB;
-  --surface: rgba(242, 240, 235, 0.04);
-  --border: rgba(242, 240, 235, 0.12);
-  --border-strong: rgba(242, 240, 235, 0.25);
-  --dim: rgba(242, 240, 235, 0.5);
-  --muted: rgba(242, 240, 235, 0.3);
-  --faint: rgba(242, 240, 235, 0.15);
+  --surface: #0F0F0F;
+  --line: #1A1A1A;
+  --line-strong: rgba(240, 240, 240, 0.12);
+  --text: #F0F0F0;
+  --text-dim: rgba(240, 240, 240, 0.6);
+  --text-muted: rgba(240, 240, 240, 0.25);
+  --text-faint: rgba(240, 240, 240, 0.12);
 }
 
 html {
   background: var(--bg);
-  color: var(--fg);
+  color: var(--text);
 }
 
 body {
-  font-family: -apple-system, "Helvetica Neue", Helvetica, sans-serif;
-  font-weight: 300;
+  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior: none;
   min-height: 100dvh;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-.font-serif {
-  font-family: var(--font-playfair), Georgia, serif;
-  letter-spacing: -0.02em;
-  font-weight: 400;
 }
 
 .font-label {
@@ -59,20 +41,11 @@ body {
 }
 
 .animate-fade-in {
-  animation: fadeIn 600ms ease-out both;
+  animation: fadeIn 500ms ease-out both;
 }
 
-.animate-fade-in-delay {
-  animation: fadeIn 600ms ease-out 200ms both;
-}
-
-@keyframes borderPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.border-pulse {
-  animation: borderPulse 3s ease-in-out infinite;
+.verse-fade {
+  transition: opacity 200ms ease;
 }
 
 .cell-press {
@@ -80,10 +53,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 .cell-press:active {
-  background-color: var(--surface);
+  background-color: var(--surface) !important;
   transform: scale(0.99);
-}
-
-.verse-fade {
-  transition: opacity 300ms ease;
 }
