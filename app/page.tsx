@@ -7,6 +7,11 @@ import { VERSES } from "@/lib/verses";
 import type { AppSummary } from "@/lib/apps";
 import type { Translation } from "@/lib/verses";
 
+function detectMobile() {
+  if (typeof window === "undefined") return true;
+  return window.innerWidth < 768 || /iPhone|iPad|Android/i.test(navigator.userAgent);
+}
+
 function formatHeader(d: Date) {
   const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
@@ -38,7 +43,7 @@ export default function HubPage() {
 
   useEffect(() => {
     setNow(new Date());
-    setIsMobile(window.innerWidth < 768);
+    setIsMobile(detectMobile());
     setVerseIdx(getDefaultVerse());
     setTranslation(getTranslation());
     const t = setInterval(() => setNow(new Date()), 30_000);
@@ -139,10 +144,13 @@ export default function HubPage() {
         </div>
       </section>
 
-      {/* Urgent strip — only if urgent */}
+      {/* Urgent strip — fully tappable */}
       {urgent && (
-        <div
-          className="flex h-11 shrink-0 items-center justify-between px-6"
+        <a
+          href={urgent.url}
+          target={isMobile ? "_self" : "_blank"}
+          rel="noopener"
+          className="cell-press flex h-11 shrink-0 items-center justify-between px-6 cursor-pointer"
           style={{
             borderTop: "1.5px solid var(--border-strong)",
             borderBottom: "0.5px solid var(--border)",
@@ -157,14 +165,10 @@ export default function HubPage() {
           >
             {urgent.alertMessage}
           </span>
-          <a
-            href={urgent.url}
-            className="font-label text-[8px]"
-            style={{ color: "var(--muted)" }}
-          >
+          <span className="font-label text-[8px]" style={{ color: "var(--muted)" }}>
             {urgent.name} &rarr;
-          </a>
-        </div>
+          </span>
+        </a>
       )}
 
       {/* App grid */}
@@ -203,7 +207,7 @@ export default function HubPage() {
       >
         <span className="font-label text-[9px]" style={{ color: "var(--fg)" }}>HOME</span>
         <Link href="/brief" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>BRIEF</Link>
-        <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>APPS</span>
+        <Link href="/apps" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>APPS</Link>
         <Link href="/settings" className="font-label text-[9px]" style={{ color: "var(--muted)" }}>SET</Link>
       </nav>
     </main>
@@ -253,7 +257,7 @@ function AppCell({ app, index, isMobile }: { app: AppSummary; index: number; isM
           className="font-label text-[8px] mt-2"
           style={{ color: "var(--muted)" }}
         >
-          {app.unit}
+          {app.label}
         </span>
       </div>
 

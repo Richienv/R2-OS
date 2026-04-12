@@ -132,24 +132,23 @@ export default function SettingsPage() {
                 className="flex items-center justify-between py-3"
                 style={{ borderTop: i > 0 ? "0.5px solid var(--border)" : "none" }}
               >
-                <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>
-                  {a.name}
-                </span>
-                <span
-                  className="font-label text-[9px] hidden sm:inline"
-                  style={{ color: "var(--muted)" }}
-                >
-                  {a.url.replace(/^https?:\/\//, "")}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span
-                    className="inline-block h-1.5 w-1.5 rounded-full"
-                    style={{ background: "var(--fg)" }}
-                  />
-                  <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>
-                    LIVE
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-[13px] font-light" style={{ color: "var(--fg)" }}>
+                    {a.name}
+                  </span>
+                  <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+                    {a.url.replace(/^https?:\/\//, "")}
                   </span>
                 </div>
+                <a
+                  href={a.url}
+                  target="_blank"
+                  rel="noopener"
+                  className="font-label text-[9px]"
+                  style={{ color: "var(--dim)" }}
+                >
+                  OPEN &rarr;
+                </a>
               </li>
             ))}
           </ul>
