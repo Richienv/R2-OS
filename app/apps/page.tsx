@@ -22,60 +22,61 @@ export default function AppsPage() {
         className="flex h-[52px] shrink-0 items-center justify-between px-6"
         style={{ borderBottom: "0.5px solid var(--border)" }}
       >
-        <Link
-          href="/"
-          className="flex h-11 w-11 items-center justify-start font-serif text-[18px]"
-          style={{ color: "var(--fg)" }}
-        >
+        <Link href="/" className="font-serif text-[18px]" style={{ color: "var(--fg)" }}>
           &larr;
         </Link>
-        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>
-          Apps
-        </span>
+        <span className="font-serif text-[22px]" style={{ color: "var(--fg)" }}>Apps</span>
         <span className="w-11" />
       </header>
 
-      <ul className="flex flex-col">
-        {APPS.map((app, i) => {
+      <div className="flex flex-col gap-px px-4 py-4 md:px-8">
+        {APPS.map((app) => {
           const statusText = app.alert
-            ? `\u26a0 ${app.alertMessage}`
+            ? `⚡ ${app.alertMessage}`
             : `${app.metric} ${app.label.toLowerCase()}`;
 
           return (
-            <li key={app.id} style={{ borderTop: i > 0 ? "0.5px solid var(--border)" : "none" }}>
-              <a
-                href={app.url}
-                target={isMobile ? "_self" : "_blank"}
-                rel="noopener"
-                className="cell-press flex items-center justify-between px-6 py-5"
+            <a
+              key={app.id}
+              href={app.url}
+              target={isMobile ? "_self" : "_blank"}
+              rel="noopener"
+              className="cell-press flex flex-col overflow-hidden"
+              style={{ border: "0.5px solid var(--border)" }}
+            >
+              {/* Dark title bar */}
+              <div
+                className="flex h-8 items-center justify-between px-3.5"
+                style={{ background: "var(--fg)" }}
               >
-                <div className="flex flex-col gap-1.5">
-                  <span className="font-serif text-[18px]" style={{ color: "var(--fg)" }}>
-                    {app.name}
-                  </span>
-                  <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
-                    {app.url.replace(/^https?:\/\//, "")}
-                  </span>
-                  <span
-                    className="font-label text-[10px]"
-                    style={{
-                      color: "var(--dim)",
-                      fontWeight: app.alert ? 500 : 400,
-                    }}
-                  >
-                    {statusText}
-                  </span>
-                </div>
-                <span className="font-label text-[14px]" style={{ color: "var(--muted)" }}>
-                  &rsaquo;
+                <span className="font-serif text-[14px]" style={{ color: "var(--bg)" }}>
+                  {app.name}
                 </span>
-              </a>
-            </li>
+                <span className="font-label text-[9px]" style={{ color: "var(--bg)", opacity: 0.6 }}>
+                  OPEN &rarr;
+                </span>
+              </div>
+
+              {/* Content */}
+              <div className="flex flex-col gap-1 px-3.5 py-3">
+                <span
+                  className="font-label text-[10px]"
+                  style={{
+                    color: app.alert ? "var(--fg)" : "var(--dim)",
+                    fontWeight: app.alert ? 500 : 400,
+                  }}
+                >
+                  {statusText}
+                </span>
+                <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
+                  {app.url.replace(/^https?:\/\//, "")}
+                </span>
+              </div>
+            </a>
           );
         })}
-      </ul>
+      </div>
 
-      {/* Bottom nav */}
       <div className="mt-auto">
         <nav
           className="flex h-[52px] shrink-0 items-center justify-around md:hidden"

@@ -19,7 +19,7 @@ function formatHeader(d: Date) {
   const mm = d.getMinutes().toString().padStart(2, "0");
   const ampm = hh >= 12 ? "PM" : "AM";
   const h12 = ((hh + 11) % 12) + 1;
-  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()} \u00b7 ${h12}:${mm} ${ampm}`;
+  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()} · ${h12}:${mm} ${ampm}`;
 }
 
 function getDefaultVerse() {
@@ -64,7 +64,7 @@ export default function HubPage() {
 
   const copyVerse = useCallback(() => {
     const v = VERSES[verseIdx];
-    navigator.clipboard.writeText(`"${v[translation]}" \u2014 ${v.ref}`);
+    navigator.clipboard.writeText(`\u201c${v[translation]}\u201d \u2014 ${v.ref}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }, [verseIdx, translation]);
@@ -81,37 +81,38 @@ export default function HubPage() {
         style={{ borderBottom: "0.5px solid var(--border)" }}
       >
         <Link href="/settings" className="font-serif text-[18px]" style={{ color: "var(--fg)" }}>
-          R2\u00b7OS
+          R2·OS
         </Link>
         <span className="font-label text-[9px]" style={{ color: "var(--muted)" }}>
           {headerTime}
         </span>
       </header>
 
-      {/* Bible verse hero */}
+      {/* Bible verse */}
       <section
-        className="flex shrink-0 flex-col px-6 py-7"
+        className="flex shrink-0 flex-col px-6 py-5"
         style={{ borderBottom: "0.5px solid var(--border)" }}
       >
+        <span
+          className="font-label text-[8px] mb-3"
+          style={{ color: "var(--faint)", letterSpacing: "3px" }}
+        >
+          // SCRIPTURE
+        </span>
+
         <div
           className="verse-fade"
-          style={{ opacity: verseFade ? 1 : 0, minHeight: "80px" }}
+          style={{ opacity: verseFade ? 1 : 0 }}
           onContextMenu={(e) => { e.preventDefault(); copyVerse(); }}
-          onClick={(e) => {
-            if ("ontouchstart" in window) return;
-            copyVerse();
-          }}
+          onClick={() => { if (typeof window !== "undefined" && !("ontouchstart" in window)) copyVerse(); }}
         >
           <p
-            className="font-serif italic text-[17px] leading-[1.7]"
+            className="font-serif italic text-[15px] leading-[1.65]"
             style={{ color: "var(--fg)" }}
           >
             &ldquo;{verse[translation]}&rdquo;
           </p>
-          <p
-            className="font-label text-[10px] mt-3"
-            style={{ color: "var(--muted)" }}
-          >
+          <p className="font-label text-[9px] mt-2" style={{ color: "var(--muted)" }}>
             &mdash; {verse.ref}
           </p>
         </div>
@@ -122,16 +123,15 @@ export default function HubPage() {
           </span>
         )}
 
-        {/* Verse nav */}
-        <div className="flex items-center justify-center gap-4 mt-4">
+        <div className="flex items-center justify-between mt-4">
           <button
             onClick={() => changeVerse(-1)}
             className="flex h-11 w-11 items-center justify-center"
             aria-label="Previous verse"
           >
-            <span className="font-label text-[14px]" style={{ color: "var(--muted)" }}>&lsaquo;</span>
+            <span className="font-serif text-[18px]" style={{ color: "var(--muted)" }}>&lsaquo;</span>
           </button>
-          <span className="font-label text-[8px]" style={{ color: "var(--muted)" }}>
+          <span className="font-label text-[9px]" style={{ color: "var(--faint)" }}>
             {verseIdx + 1} / {VERSES.length}
           </span>
           <button
@@ -139,12 +139,12 @@ export default function HubPage() {
             className="flex h-11 w-11 items-center justify-center"
             aria-label="Next verse"
           >
-            <span className="font-label text-[14px]" style={{ color: "var(--muted)" }}>&rsaquo;</span>
+            <span className="font-serif text-[18px]" style={{ color: "var(--muted)" }}>&rsaquo;</span>
           </button>
         </div>
       </section>
 
-      {/* Urgent strip — fully tappable */}
+      {/* Urgent strip */}
       {urgent && (
         <a
           href={urgent.url}
@@ -156,17 +156,12 @@ export default function HubPage() {
             borderBottom: "0.5px solid var(--border)",
           }}
         >
-          <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>
-            URGENT
-          </span>
-          <span
-            className="font-serif italic text-[14px]"
-            style={{ color: "var(--fg)" }}
-          >
+          <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>URGENT</span>
+          <span className="font-serif italic text-[14px]" style={{ color: "var(--fg)" }}>
             {urgent.alertMessage}
           </span>
           <span className="font-label text-[8px]" style={{ color: "var(--muted)" }}>
-            {urgent.name} &rarr;
+            {urgent.name} &rsaquo;
           </span>
         </a>
       )}
@@ -183,21 +178,13 @@ export default function HubPage() {
         className="flex h-10 shrink-0 items-center justify-between px-6"
         style={{ borderTop: "0.5px solid var(--border)" }}
       >
-        <span className="font-label text-[8px]" style={{ color: "var(--faint)" }}>
-          R2\u00b7OS V1.0
-        </span>
+        <span className="font-label text-[8px]" style={{ color: "var(--faint)" }}>R2·OS V1.0</span>
         <div className="flex items-center gap-3">
           {APPS.map((a) => (
-            <span
-              key={a.id}
-              className="inline-block h-1.5 w-1.5 rounded-full"
-              style={{ background: "var(--fg)" }}
-            />
+            <span key={a.id} className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: "var(--fg)" }} />
           ))}
         </div>
-        <span className="font-label text-[8px]" style={{ color: "var(--faint)" }}>
-          ALL SYSTEMS ACTIVE
-        </span>
+        <span className="font-label text-[8px]" style={{ color: "var(--faint)" }}>ALL SYSTEMS ACTIVE</span>
       </footer>
 
       {/* Mobile bottom nav */}
@@ -224,47 +211,49 @@ function AppCell({ app, index, isMobile }: { app: AppSummary; index: number; isM
       href={app.url}
       target={isMobile ? "_self" : "_blank"}
       rel="noopener"
-      className="cell-press relative flex flex-col"
+      className="cell-press group relative flex flex-col cursor-pointer"
       style={{
         borderRight: isRight ? "none" : "0.5px solid var(--border)",
         borderBottom: isBottom ? "none" : "0.5px solid var(--border)",
-        borderTop: isUrgent ? "1.5px solid var(--border-strong)" : "none",
       }}
     >
-      {/* App name row — 32px */}
+      {/* Dark title bar — 36px */}
       <div
-        className="flex h-8 items-center gap-2 px-4"
-        style={{ borderBottom: "0.5px solid var(--faint)" }}
+        className="flex h-9 shrink-0 items-center justify-between px-3.5 transition-colors duration-100 group-hover:brightness-125"
+        style={{ background: "var(--fg)" }}
       >
         <span
-          className="inline-block h-1.5 w-1.5 rounded-full"
-          style={{ background: "var(--fg)" }}
-        />
-        <span className="font-label text-[8px]" style={{ color: "var(--dim)" }}>
+          className="font-serif text-[14px]"
+          style={{ color: "var(--bg)" }}
+        >
           {app.name}
+        </span>
+        <span className="flex items-center gap-1.5">
+          {isUrgent && (
+            <span className="text-[10px]" style={{ color: "var(--bg)", opacity: 0.7 }}>⚡</span>
+          )}
+          <span
+            className="font-label text-[12px]"
+            style={{ color: "var(--bg)", opacity: 0.5 }}
+          >
+            &rsaquo;
+          </span>
         </span>
       </div>
 
-      {/* Metric area — flex 1 */}
-      <div className="flex flex-1 flex-col justify-center px-4 py-3">
+      {/* Metric area */}
+      <div className="flex flex-1 flex-col justify-center px-3.5 py-3">
         <span
-          className="font-serif text-[44px] leading-none"
+          className="font-serif text-[48px] leading-none"
           style={{ color: "var(--fg)", fontWeight: isUrgent ? 500 : 400 }}
         >
           {app.metric}
         </span>
         <span
-          className="font-label text-[8px] mt-2"
-          style={{ color: "var(--muted)" }}
+          className="font-label text-[8px] mt-1.5"
+          style={{ color: isUrgent ? "var(--fg)" : "var(--muted)" }}
         >
-          {app.label}
-        </span>
-      </div>
-
-      {/* Arrow */}
-      <div className="flex justify-end px-4 pb-3">
-        <span className="font-label text-[10px]" style={{ color: "var(--faint)" }}>
-          &rarr;
+          {isUrgent && app.alertMessage ? app.alertMessage.toUpperCase() : app.label}
         </span>
       </div>
     </a>
