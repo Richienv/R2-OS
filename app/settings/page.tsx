@@ -4,26 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { APPS } from "@/lib/apps";
 import { navigateToApp } from "@/lib/navigate";
-import type { Translation } from "@/lib/verses";
-
-const TRANSLATIONS: { key: Translation; label: string }[] = [
-  { key: "esv", label: "ESV" },
-  { key: "niv", label: "NIV" },
-  { key: "kjv", label: "KJV" },
-  { key: "nlt", label: "NLT" },
-];
 
 export default function SettingsPage() {
-  const [translation, setTranslationState] = useState<Translation>(() => {
-    if (typeof window === "undefined") return "esv";
-    return (localStorage.getItem("r2os-translation") as Translation) || "esv";
-  });
-
-  function setTranslation(t: Translation) {
-    setTranslationState(t);
-    localStorage.setItem("r2os-translation", t);
-  }
-
   return (
     <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
@@ -43,22 +25,7 @@ export default function SettingsPage() {
           <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
             BIBLE TRANSLATION
           </span>
-          <div className="flex gap-2">
-            {TRANSLATIONS.map((t) => (
-              <button
-                key={t.key}
-                onClick={() => setTranslation(t.key)}
-                className="font-label text-[10px] px-3 py-1.5 transition-colors duration-100"
-                style={{
-                  color: translation === t.key ? "var(--bg)" : "var(--text-muted)",
-                  background: translation === t.key ? "var(--text)" : "transparent",
-                  border: `0.5px solid ${translation === t.key ? "var(--text)" : "var(--line)"}`,
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
+          <span style={{ fontSize: 13, color: "var(--text)" }}>ESV (English Standard Version)</span>
         </section>
 
         {/* Connected apps */}

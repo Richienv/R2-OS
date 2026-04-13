@@ -40,12 +40,24 @@ body {
   to { opacity: 1; }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.8; }
+}
+
 .animate-fade-in {
   animation: fadeIn 500ms ease-out both;
 }
 
 .verse-fade {
   transition: opacity 200ms ease;
+}
+
+.verse-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cell-press {
