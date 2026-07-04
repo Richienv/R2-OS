@@ -9,31 +9,28 @@ export default function SettingsPage() {
   return (
     <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
       <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-5"
+        className="flex h-[54px] shrink-0 items-center justify-between px-[22px]"
         style={{ borderBottom: "0.5px solid var(--line)" }}
       >
-        <Link href="/" style={{ color: "var(--text)", fontSize: 18, fontWeight: 600 }}>
+        <Link href="/" className="w-7 text-left" style={{ color: "var(--text)", fontSize: 19, textDecoration: "none" }}>
           &larr;
         </Link>
-        <span style={{ color: "var(--text)", fontSize: 24, fontWeight: 600 }}>Settings</span>
-        <span className="w-11" />
+        <span style={{ fontSize: 20, fontWeight: 700, color: "var(--text)", letterSpacing: "-0.4px" }}>Settings</span>
+        <span className="w-7" />
       </header>
 
-      <div className="flex flex-col px-5 md:px-8 lg:px-24">
+      <div className="flex flex-col px-[22px] md:px-8 lg:px-24">
         {/* Bible translation */}
         <section className="flex flex-col gap-4 py-7">
-          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
+          <span className="font-label" style={{ fontSize: 8, color: "var(--label)", letterSpacing: "0.22em" }}>
             BIBLE TRANSLATION
           </span>
           <span style={{ fontSize: 13, color: "var(--text)" }}>ESV (English Standard Version)</span>
         </section>
 
         {/* Connected apps */}
-        <section
-          className="flex flex-col gap-4 py-7"
-          style={{ borderTop: "0.5px solid var(--line)" }}
-        >
-          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
+        <section className="flex flex-col gap-4 py-7" style={{ borderTop: "0.5px solid var(--line)" }}>
+          <span className="font-label" style={{ fontSize: 8, color: "var(--label)", letterSpacing: "0.22em" }}>
             CONNECTED APPS
           </span>
           <ul className="flex flex-col">
@@ -43,18 +40,27 @@ export default function SettingsPage() {
                 className="flex items-center justify-between py-3"
                 style={{ borderTop: i > 0 ? "0.5px solid var(--line)" : "none" }}
               >
-                <div className="flex flex-col gap-0.5">
-                  <span style={{ fontSize: 13, fontWeight: 400, color: "var(--text)" }}>
-                    {a.name}
-                  </span>
-                  <span className="font-label text-[9px]" style={{ color: "#444" }}>
-                    {a.url.replace(/^https?:\/\//, "")}
-                  </span>
+                <div className="flex items-center gap-3">
+                  <span
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: "50%",
+                      background: a.grad,
+                      boxShadow: `0 0 9px ${a.glow}`,
+                    }}
+                  />
+                  <div className="flex flex-col gap-0.5">
+                    <span style={{ fontSize: 13, fontWeight: 500, color: "var(--text)" }}>{a.name}</span>
+                    <span className="font-label" style={{ fontSize: 9, color: "var(--label-dim)" }}>
+                      {a.url.replace(/^https?:\/\//, "")}
+                    </span>
+                  </div>
                 </div>
                 <button
                   onClick={() => navigateToApp(a.url)}
-                  className="font-label text-[9px] cursor-pointer"
-                  style={{ color: "var(--text-dim)" }}
+                  className="font-label cursor-pointer"
+                  style={{ fontSize: 9, color: "var(--text-dim)" }}
                 >
                   OPEN &rarr;
                 </button>
@@ -64,11 +70,8 @@ export default function SettingsPage() {
         </section>
 
         {/* Profile */}
-        <section
-          className="flex flex-col gap-4 py-7"
-          style={{ borderTop: "0.5px solid var(--line)" }}
-        >
-          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
+        <section className="flex flex-col gap-4 py-7" style={{ borderTop: "0.5px solid var(--line)" }}>
+          <span className="font-label" style={{ fontSize: 8, color: "var(--label)", letterSpacing: "0.22em" }}>
             PROFILE
           </span>
           <div className="flex flex-col">
@@ -79,11 +82,8 @@ export default function SettingsPage() {
         </section>
 
         {/* Notifications */}
-        <section
-          className="flex flex-col gap-4 py-7"
-          style={{ borderTop: "0.5px solid var(--line)" }}
-        >
-          <span className="font-label text-[8px]" style={{ color: "#444", letterSpacing: "3px" }}>
+        <section className="flex flex-col gap-4 py-7" style={{ borderTop: "0.5px solid var(--line)" }}>
+          <span className="font-label" style={{ fontSize: 8, color: "var(--label)", letterSpacing: "0.22em" }}>
             NOTIFICATIONS
           </span>
           <div className="flex flex-col">
@@ -103,7 +103,7 @@ function Row({ k, v }: { k: string; v: string }) {
       className="flex items-center justify-between py-3"
       style={{ borderBottom: "0.5px solid var(--line)" }}
     >
-      <span className="font-label text-[9px]" style={{ color: "#444" }}>{k}</span>
+      <span className="font-label" style={{ fontSize: 9, color: "var(--label)" }}>{k}</span>
       <span style={{ fontSize: 13, color: "var(--text)" }}>{v}</span>
     </div>
   );
@@ -119,13 +119,16 @@ function Toggle({ label }: { label: string }) {
     >
       <span style={{ fontSize: 13, color: "var(--text)" }}>{label}</span>
       <div
-        className="relative w-9 h-5 rounded-full transition-colors duration-200"
-        style={{ background: on ? "var(--text)" : "var(--line)" }}
+        className="relative h-5 w-9 rounded-full transition-colors duration-200"
+        style={{
+          background: on ? "var(--fire-grad)" : "var(--line)",
+          boxShadow: on ? "0 0 10px var(--fire-glow)" : "none",
+        }}
       >
         <div
           className="absolute top-0.5 h-4 w-4 rounded-full transition-transform duration-200"
           style={{
-            background: "var(--bg)",
+            background: on ? "#fff" : "var(--label-dim)",
             transform: on ? "translateX(18px)" : "translateX(2px)",
           }}
         />

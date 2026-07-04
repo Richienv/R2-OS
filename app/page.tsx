@@ -5,8 +5,10 @@ import { useCallback, useEffect, useState } from "react";
 import { APPS, type AppConfig } from "@/lib/apps";
 import { VERSES } from "@/lib/verses";
 import { navigateToApp } from "@/lib/navigate";
-import { useOSData, formatTimeAgo } from "@/lib/useOSData";
+import { useOSData } from "@/lib/useOSData";
 import type { AggregatedApp } from "@/app/api/aggregate/route";
+import BottomNav from "@/app/components/BottomNav";
+import AppGlyph from "@/app/components/AppGlyph";
 
 function formatHeader(d: Date) {
   const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
@@ -40,21 +42,14 @@ export default function HubPage() {
   const [now, setNow] = useState<Date | null>(null);
   const [verseIdx, setVerseIdx] = useState(0);
   const [verseFade, setVerseFade] = useState(true);
-  const [showHint, setShowHint] = useState(false);
+  const [revealedId, setRevealedId] = useState<string | null>(null);
 
-  const { data, lastUpdated, allOffline, refresh, loading } = useOSData();
+  const { data, allOffline, lastUpdated } = useOSData();
 
   useEffect(() => {
     setNow(new Date());
     setVerseIdx(getSavedVerseIdx());
-    const t = setInterval(() => setNow(new Date()), 30_000);
-    if (!localStorage.getItem("verse-hint-shown")) {
-      setShowHint(true);
-      setTimeout(() => {
-        setShowHint(false);
-        localStorage.setItem("verse-hint-shown", "true");
-      }, 3000);
-    }
+    const t = setInterval(() => setNow(new Date()), 20_000);
     return () => clearInterval(t);
   }, []);
 
@@ -70,184 +65,196 @@ export default function HubPage() {
     }, 200);
   }, []);
 
-  const headerTime = now ? formatHeader(now) : "\u00a0";
+  const tapTile = useCallback(
+    (app: AppConfig) => {
+      if (revealedId !== app.id) setRevealedId(app.id);
+      else navigateToApp(app.url);
+    },
+    [revealedId]
+  );
+
+  const headerTime = now ? formatHeader(now) : " ";
   const verse = VERSES[verseIdx];
-  const urgent = data.urgentItem;
-  const timeAgo = formatTimeAgo(lastUpdated);
 
   return (
     <main className="flex h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
-      {/* Header */}
-      <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-5"
-        style={{ borderBottom: "0.5px solid var(--line)" }}
-      >
-        <Link href="/settings" className="flex items-baseline" style={{ gap: 1, textDecoration: "none" }}>
-          <span style={{ fontWeight: 800, fontSize: 22, color: "#F0F0F0", letterSpacing: "-0.5px" }}>R2</span>
-          <span style={{ fontWeight: 300, fontSize: 22, color: "rgba(240,240,240,0.4)", letterSpacing: "-0.5px" }}>·OS</span>
-        </Link>
-        <span className="font-label text-[9px]" style={{ color: "#444" }}>
-          {headerTime}
-        </span>
-      </header>
-
-      {/* Urgent strip — live */}
-      {urgent && urgent.alertText && (
-        <button
-          onClick={() => navigateToApp(urgent.appUrl)}
-          className="cell-press flex h-10 w-full shrink-0 items-center px-5 cursor-pointer text-left"
-          style={{
-            borderTop: "1px solid var(--line-strong)",
-            borderBottom: "0.5px solid var(--line)",
-          }}
+      <div className="r2scr flex min-h-0 flex-1 flex-col overflow-y-auto">
+        {/* Header */}
+        <header
+          className="flex h-[54px] shrink-0 items-center justify-between px-[22px]"
+          style={{ borderBottom: "0.5px solid var(--line)" }}
         >
-          <span style={{ color: "var(--text-dim)", fontSize: 12, fontWeight: 400 }}>
-            ⚡ {urgent.alertText} → {urgent.shortName}
+          <Link href="/settings" className="flex items-baseline" style={{ gap: 1, textDecoration: "none" }}>
+            <span style={{ fontWeight: 800, fontSize: 23, color: "var(--text)", letterSpacing: "-0.6px" }}>R2</span>
+            <span style={{ fontWeight: 300, fontSize: 23, color: "rgba(248,244,240,0.38)", letterSpacing: "-0.6px" }}>
+              ·OS
+            </span>
+          </Link>
+          <span className="font-label" style={{ fontSize: 9, color: "var(--label-dim)" }}>
+            {headerTime}
           </span>
-        </button>
-      )}
+        </header>
 
-      {/* Bible verse — tap for new */}
-      <div
-        onClick={newRandomVerse}
-        className="shrink-0 px-6 py-6"
-        style={{
-          borderBottom: "0.5px solid var(--line)",
-          cursor: "pointer",
-          WebkitTapHighlightColor: "transparent",
-          userSelect: "none",
-        }}
-      >
-        <div
-          className="verse-fade text-center"
-          style={{ opacity: verseFade ? 1 : 0, maxWidth: 340, margin: "0 auto" }}
-        >
-          <p style={{ fontStyle: "italic", fontSize: 15, lineHeight: 1.6, color: "rgba(240,240,240,0.85)" }}>
-            &ldquo;{verse.text}&rdquo;
-          </p>
-          <p className="font-label text-[9px] mt-2.5" style={{ color: "rgba(240,240,240,0.25)" }}>
-            &mdash; {verse.ref}
-          </p>
+        {/* Verse card — tap for new */}
+        <div className="flex flex-1 items-center p-5">
+          <button
+            onClick={newRandomVerse}
+            className="cell-press relative w-full cursor-pointer overflow-hidden text-center"
+            style={{
+              padding: "22px 20px 18px",
+              borderRadius: 22,
+              background: "var(--card)",
+              border: "none",
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.5)",
+            }}
+          >
+            <span
+              aria-hidden
+              className="fire-text"
+              style={{
+                position: "absolute",
+                top: 8,
+                left: 20,
+                fontSize: 52,
+                lineHeight: 1,
+                fontWeight: 800,
+                opacity: 0.5,
+              }}
+            >
+              &ldquo;
+            </span>
+            <div className="verse-fade relative" style={{ opacity: verseFade ? 1 : 0 }}>
+              <p
+                style={{
+                  fontStyle: "italic",
+                  fontSize: 15,
+                  lineHeight: 1.6,
+                  color: "rgba(248,244,240,0.9)",
+                  maxWidth: 280,
+                  margin: "0 auto",
+                }}
+              >
+                &ldquo;{verse.text}&rdquo;
+              </p>
+              <p className="font-label" style={{ fontSize: 9, color: "var(--label)", margin: "11px 0 0" }}>
+                &mdash; {verse.ref}
+              </p>
+              {allOffline && lastUpdated && (
+                <p className="font-label" style={{ fontSize: 8, color: "var(--label-dim)", margin: "10px 0 0" }}>
+                  unable to reach apps. check connection.
+                </p>
+              )}
+            </div>
+          </button>
         </div>
-        {showHint && (
-          <p
-            className="font-label text-[8px] text-center mt-3 animate-fade-in"
-            style={{ color: "rgba(240,240,240,0.15)" }}
-          >
-            tap to receive a new verse
-          </p>
-        )}
-        {allOffline && lastUpdated && (
-          <p
-            className="font-label text-center mt-3"
-            style={{ color: "#444", fontSize: 9 }}
-          >
-            unable to reach apps. check connection.
-          </p>
-        )}
+
+        {/* 2x2 grid */}
+        <div className="relative shrink-0" style={{ padding: "0 12px 16px" }}>
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "52%",
+              width: 340,
+              height: 340,
+              transform: "translate(-50%,-50%)",
+              background: "radial-gradient(circle,rgba(238,60,48,.14),transparent 62%)",
+              pointerEvents: "none",
+            }}
+          />
+          <div className="relative grid grid-cols-2" style={{ gap: 5 }}>
+            {APPS.map((app, i) => (
+              <AppTile
+                key={app.id}
+                app={app}
+                live={data.apps[app.id]}
+                index={i}
+                revealed={revealedId === app.id}
+                onTap={() => tapTile(app)}
+              />
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* App grid — live data */}
-      <section className="grid min-h-0 flex-1 grid-cols-2 grid-rows-2">
-        {APPS.map((app, i) => (
-          <AppCell key={app.id} app={app} live={data.apps[app.id]} index={i} />
-        ))}
-      </section>
-
-      {/* Footer — tap to refresh */}
-      <footer
-        onClick={refresh}
-        className="flex h-9 shrink-0 cursor-pointer items-center justify-center gap-4 px-5"
-        style={{ borderTop: "0.5px solid var(--line)" }}
-      >
-        <span className="font-label text-[8px]" style={{ color: "#444" }}>R2·OS</span>
-        <span className="font-label text-[8px]" style={{ color: "#444" }}>
-          UPDATED {loading ? "…" : timeAgo}
-        </span>
-        <span className="font-label text-[8px]" style={{ color: "#444" }}>V1.0</span>
-      </footer>
-
-      {/* Mobile bottom nav */}
-      <nav
-        className="flex h-14 shrink-0 items-center justify-around md:hidden"
-        style={{ borderTop: "0.5px solid var(--line)", background: "var(--bg)" }}
-      >
-        <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text)" }}>HOME</span>
-        <Link href="/brief" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>BRIEF</Link>
-        <Link href="/apps" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>APPS</Link>
-        <Link href="/settings" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>SET</Link>
-      </nav>
-
+      <BottomNav active="HOME" />
     </main>
   );
 }
 
-function AppCell({
+function AppTile({
   app,
   live,
   index,
+  revealed,
+  onTap,
 }: {
   app: AppConfig;
   live: AggregatedApp | undefined;
   index: number;
+  revealed: boolean;
+  onTap: () => void;
 }) {
-  const isRight = index % 2 === 1;
-  const isBottom = index >= 2;
   const isLoading = !live || live.metric === "···";
-  const isUrgent = live?.urgency === "urgent";
-  const isOffline = live && !live.ok && !isLoading;
-
-  const dataText = isLoading
-    ? "···"
-    : isUrgent && live?.alertText
-    ? live.alertText
-    : `${live?.metric ?? "—"} ${(live?.label ?? "").toLowerCase()}`;
+  const metric = isLoading ? "···" : live.metric;
+  const unit = isLoading ? "" : (live.label ?? "").toLowerCase();
 
   return (
     <button
-      onClick={() => navigateToApp(app.url)}
-      className="cell-press relative flex flex-col items-center justify-center cursor-pointer"
+      onClick={onTap}
+      className="cell-press relative flex cursor-pointer flex-col items-start justify-between overflow-hidden text-left"
       style={{
-        background: "var(--bg)",
-        borderRight: isRight ? "none" : "1px solid var(--line)",
-        borderBottom: isBottom ? "none" : "1px solid var(--line)",
-        opacity: isOffline ? 0.5 : 1,
+        height: 176,
+        padding: 15,
+        borderRadius: 18,
+        background: "var(--fire-grad)",
+        border: "none",
+        boxShadow: "inset 0 1.5px 1px var(--fire-hi), inset 0 -4px 9px var(--fire-lo), 0 12px 26px var(--fire-glow)",
       }}
     >
       <span
         style={{
-          fontSize: 36,
-          fontWeight: 700,
-          color: isUrgent ? "#E8FF47" : "var(--text)",
-          lineHeight: 1.1,
-        }}
-      >
-        {app.shortName}
-      </span>
-      <span
-        style={{
-          fontSize: 13,
-          fontWeight: 400,
-          color: "rgba(240,240,240,0.35)",
-          marginTop: 6,
-          textAlign: "center",
-          animation: isLoading ? "pulse 1.5s ease-in-out infinite" : "none",
-        }}
-      >
-        {dataText}
-      </span>
-      <span
-        className="font-label"
-        style={{
           position: "absolute",
-          bottom: 12,
+          top: 13,
           right: 14,
-          fontSize: 11,
-          color: "rgba(240,240,240,0.15)",
+          fontSize: 14,
+          fontWeight: 700,
+          color: "#fff",
+          opacity: revealed ? 1 : 0,
+          transition: "opacity 150ms ease",
         }}
       >
-        &rsaquo;
+        ↗
       </span>
+      <span
+        className="relative inline-flex"
+        style={{ animation: "r2float 3.6s ease-in-out infinite", animationDelay: `${(index * 0.45).toFixed(2)}s` }}
+      >
+        <AppGlyph id={app.id} />
+      </span>
+      <div className="relative flex flex-col items-start gap-1">
+        <span
+          style={{
+            fontSize: 26,
+            fontWeight: 800,
+            letterSpacing: "-0.5px",
+            color: "#fff",
+            lineHeight: 1,
+            textShadow: "0 1px 2px rgba(0,0,0,.3)",
+          }}
+        >
+          {app.shortName}
+        </span>
+        {revealed && (
+          <div className="flex items-baseline gap-[3px] animate-fade-in">
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1 }}>{metric}</span>
+            <span style={{ fontSize: 10, fontWeight: 600, color: "rgba(255,255,255,0.72)", letterSpacing: "0.02em" }}>
+              {unit}
+            </span>
+          </div>
+        )}
+      </div>
     </button>
   );
 }
