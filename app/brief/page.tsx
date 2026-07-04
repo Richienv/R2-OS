@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { APPS } from "@/lib/apps";
 import { navigateToApp } from "@/lib/navigate";
 import { useOSData } from "@/lib/useOSData";
-import type { AggregatedApp } from "@/app/api/aggregate/route";
+import type { AggregatedApp } from "@/lib/os-types";
 import BottomNav from "@/app/components/BottomNav";
 
 const SECTIONS: { appId: "fit" | "school" | "finance" | "build"; title: string }[] = [

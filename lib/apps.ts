@@ -45,5 +45,3 @@ export const APPS: AppConfig[] = [
     glow: "rgba(238,60,48,.45)",
   },
 ];
-
-export const PING_URLS = APPS.map((a) => `${a.url}/api/ping`);

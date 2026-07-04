@@ -6,7 +6,7 @@ import { APPS, type AppConfig } from "@/lib/apps";
 import { VERSES } from "@/lib/verses";
 import { navigateToApp } from "@/lib/navigate";
 import { useOSData } from "@/lib/useOSData";
-import type { AggregatedApp } from "@/app/api/aggregate/route";
+import type { AggregatedApp } from "@/lib/os-types";
 import BottomNav from "@/app/components/BottomNav";
 import AppGlyph from "@/app/components/AppGlyph";
 

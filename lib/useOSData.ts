@@ -1,11 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { PING_URLS } from "./apps";
-import type { AggregateResponse, AggregatedApp } from "@/app/api/aggregate/route";
+import type { AggregateResponse, AggregatedApp } from "./os-types";
 
 const REFRESH_MS = 5 * 60 * 1000;
-const PING_MS = 4 * 60 * 1000;
 const CACHE_MAX_AGE_MS = 10 * 60 * 1000;
 const CACHE_KEY = "r2os-data-cache";
 
@@ -72,8 +70,8 @@ export function useOSData(): UseOSData {
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/aggregate", { cache: "no-store" });
-      if (!res.ok) throw new Error("aggregate failed");
+      const res = await fetch("/api/summary", { cache: "no-store" });
+      if (!res.ok) throw new Error("summary failed");
       const next = (await res.json()) as AggregateResponse;
       setData(next);
       setLastUpdated(new Date());
@@ -92,17 +90,6 @@ export function useOSData(): UseOSData {
     const interval = setInterval(refresh, REFRESH_MS);
     return () => clearInterval(interval);
   }, [refresh]);
-
-  useEffect(() => {
-    const ping = () => {
-      PING_URLS.forEach((url) => {
-        fetch(url, { method: "GET", mode: "no-cors" }).catch(() => {});
-      });
-    };
-    ping();
-    const interval = setInterval(ping, PING_MS);
-    return () => clearInterval(interval);
-  }, []);
 
   const allOffline = Object.values(data.apps).every((a) => !a.ok);
 
