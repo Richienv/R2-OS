@@ -3,14 +3,22 @@
 @tailwind utilities;
 
 :root {
-  --bg: #080808;
-  --surface: #0F0F0F;
-  --line: #1A1A1A;
-  --line-strong: rgba(240, 240, 240, 0.12);
-  --text: #F0F0F0;
-  --text-dim: rgba(240, 240, 240, 0.6);
-  --text-muted: rgba(240, 240, 240, 0.25);
-  --text-faint: rgba(240, 240, 240, 0.12);
+  --bg: #050406;
+  --panel: #070608;
+  --card: #0c0a0b;
+  --line: #1a1618;
+  --line-strong: rgba(248, 244, 240, 0.12);
+  --text: #f8f4f0;
+  --text-dim: rgba(248, 244, 240, 0.55);
+  --text-muted: rgba(248, 244, 240, 0.42);
+  --text-faint: rgba(248, 244, 240, 0.25);
+  --label: #6b6469;
+  --label-dim: #5a5458;
+  --dot-idle: #3a3538;
+  --fire-grad: linear-gradient(180deg, #ff8a52, #ee3c30 55%, #c01f12);
+  --fire-glow: rgba(238, 60, 48, 0.45);
+  --fire-hi: rgba(255, 225, 205, 0.7);
+  --fire-lo: rgba(150, 20, 5, 0.4);
 }
 
 html {
@@ -19,7 +27,7 @@ html {
 }
 
 body {
-  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Helvetica, sans-serif;
+  font-family: var(--font-sans), "Plus Jakarta Sans", system-ui, sans-serif;
   font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -30,9 +38,22 @@ body {
 }
 
 .font-label {
-  font-family: "SF Mono", "Courier New", monospace;
+  font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.14em;
+}
+
+.fire-text {
+  background: var(--fire-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.032), transparent 22%), var(--card);
+  border: 0.9px solid rgba(255, 255, 255, 0.08);
 }
 
 @keyframes fadeIn {
@@ -45,6 +66,21 @@ body {
   50% { opacity: 0.8; }
 }
 
+@keyframes r2glaze {
+  0% { transform: translateX(-140%) skewX(-18deg); }
+  100% { transform: translateX(320%) skewX(-18deg); }
+}
+
+@keyframes r2float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes r2rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .animate-fade-in {
   animation: fadeIn 500ms ease-out both;
 }
@@ -53,18 +89,17 @@ body {
   transition: opacity 200ms ease;
 }
 
-.verse-clamp {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
 .cell-press {
-  transition: background-color 100ms ease, transform 100ms ease;
+  transition: transform 120ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 .cell-press:active {
-  background-color: var(--surface) !important;
-  transform: scale(0.99);
+  transform: translateY(2px);
+}
+
+.r2scr {
+  scrollbar-width: none;
+}
+.r2scr::-webkit-scrollbar {
+  display: none;
 }
