@@ -43,7 +43,7 @@ export async function GET() {
     (
       <div
         style={{
-          background: "#080808",
+          background: "radial-gradient(120% 90% at 50% -10%, #1a1012 0%, #050406 60%)",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -59,7 +59,7 @@ export async function GET() {
           <span
             style={{
               fontSize: 10,
-              color: "rgba(240,240,240,0.3)",
+              color: "#ee3c30",
               letterSpacing: "4px",
               marginBottom: 24,
               fontFamily: "monospace",
@@ -71,9 +71,10 @@ export async function GET() {
           <span
             style={{
               fontSize: 96,
-              fontWeight: 700,
-              color: "#F0F0F0",
+              fontWeight: 800,
+              color: "#f8f4f0",
               lineHeight: 1.0,
+              letterSpacing: "-3px",
             }}
           >
             R2·OS
@@ -161,7 +162,8 @@ export async function GET() {
                   width: 6,
                   height: 6,
                   borderRadius: "50%",
-                  background: "rgba(240,240,240,0.25)",
+                  background: "#ee3c30",
+                  boxShadow: "0 0 10px rgba(238,60,48,0.6)",
                 }}
               />
             </div>

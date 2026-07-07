@@ -4,75 +4,61 @@ import Link from "next/link";
 import { APPS } from "@/lib/apps";
 import { navigateToApp } from "@/lib/navigate";
 import { useOSData } from "@/lib/useOSData";
+import { BottomNav } from "@/app/BottomNav";
 
 export default function AppsPage() {
   const { data } = useOSData();
 
   return (
-    <main className="flex min-h-[100dvh] w-full flex-col" style={{ background: "var(--bg)" }}>
-      <header
-        className="flex h-[52px] shrink-0 items-center justify-between px-5"
-        style={{ borderBottom: "0.5px solid var(--line)" }}
-      >
-        <Link href="/" style={{ color: "var(--text)", fontSize: 18, fontWeight: 600 }}>
+    <main className="flex h-[100dvh] w-full flex-col" style={{ background: "var(--bg-void)" }}>
+      <header className="topbar">
+        <Link href="/" className="back">
           &larr;
         </Link>
-        <span style={{ color: "var(--text)", fontSize: 24, fontWeight: 600 }}>Apps</span>
-        <span className="w-11" />
+        <span className="title">Apps</span>
+        <span className="spacer" />
       </header>
 
-      <div className="flex items-center px-5 py-3" style={{ borderBottom: "0.5px solid var(--line)" }}>
-        <span className="font-label text-[9px]" style={{ color: "#444", fontStyle: "italic" }}>
-          Tap OS button in any app to return here
-        </span>
-      </div>
-
-      <ul className="flex flex-col">
-        {APPS.map((app) => {
-          const live = data.apps[app.id];
-          const isLoading = !live || live.metric === "···";
-          const isOffline = live && !live.ok && !isLoading;
-          const summary = isLoading
-            ? "…"
-            : `${live?.metric ?? "—"} ${(live?.label ?? "").toLowerCase()}`;
-          return (
-            <li key={app.id} style={{ borderBottom: "0.5px solid var(--line)" }}>
+      <div className="screen">
+        <div className="apps-list">
+          {APPS.map((app) => {
+            const live = data.apps[app.id];
+            const isLoading = !live || live.metric === "···";
+            const summary = isLoading
+              ? "…"
+              : `${live?.metric ?? "—"} ${(live?.label ?? "").toLowerCase()}`;
+            return (
               <button
+                key={app.id}
+                className="app-row"
                 onClick={() => navigateToApp(app.url)}
-                className="cell-press flex h-[72px] w-full items-center justify-between px-5 cursor-pointer text-left"
-                style={{ opacity: isOffline ? 0.5 : 1 }}
               >
-                <div className="flex flex-col gap-1">
-                  <span style={{ fontSize: 20, fontWeight: 700, color: "var(--text)" }}>
-                    {app.shortName}
-                  </span>
-                  <span className="font-label text-[9px]" style={{ color: "#444" }}>
-                    {app.url.replace(/^https?:\/\//, "")}
-                  </span>
+                <div
+                  className="badge"
+                  style={{
+                    background: app.accentGrad,
+                    boxShadow: `inset 0 1.5px 1px rgba(255,255,255,.45), inset 0 -3px 7px rgba(0,0,0,.35), 0 6px 16px ${app.accentGlow}`,
+                  }}
+                >
+                  <span>{app.shortName}</span>
                 </div>
-                <div className="flex flex-col items-end gap-1">
-                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{summary}</span>
-                  <span className="font-label text-[10px]" style={{ color: "var(--text-muted)" }}>
+                <div className="meta">
+                  <span className="name">{app.name}</span>
+                  <span className="host">{app.host}</span>
+                </div>
+                <div className="end">
+                  <span className="summary">{summary}</span>
+                  <span className="open" style={{ color: app.accentGlow }}>
                     OPEN &rarr;
                   </span>
                 </div>
               </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <div className="mt-auto">
-        <nav
-          className="flex h-14 shrink-0 items-center justify-around md:hidden"
-          style={{ borderTop: "0.5px solid var(--line)", background: "var(--bg)" }}
-        >
-          <Link href="/" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>HOME</Link>
-          <Link href="/brief" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>BRIEF</Link>
-          <span style={{ fontSize: 11, fontWeight: 500, color: "var(--text)" }}>APPS</span>
-          <Link href="/settings" style={{ fontSize: 11, fontWeight: 500, color: "#444" }}>SET</Link>
-        </nav>
+            );
+          })}
+        </div>
       </div>
+
+      <BottomNav active="apps" />
     </main>
   );
 }
