@@ -523,6 +523,171 @@ body {
   color: var(--text-mute);
 }
 
+/* ============================================================
+   MINIMAL HOME — all-black agent list (Indonesian)
+   ============================================================ */
+.mini {
+  position: relative;
+  height: 100dvh;
+  width: 100%;
+  background: #000;
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* top-right status cluster */
+.mini-status {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #35d07f;
+  box-shadow: 0 0 8px rgba(53, 208, 127, 0.8);
+}
+.mini-orb-top {
+  position: absolute;
+  top: 44px;
+  right: 22px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 38%, #6db8ff 0%, #2f7ff0 46%, #123a8a 100%);
+  box-shadow: 0 0 14px rgba(64, 140, 255, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+.mini-orb-top span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* vertical menu list */
+.mini-list {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-54%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-left: 40px;
+}
+.mini-item {
+  background: none;
+  border: none;
+  padding: 6px 0;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  line-height: 1.32;
+  color: #f6f5f4;
+  cursor: pointer;
+  transition: opacity 0.14s ease, transform 0.14s ease;
+  width: fit-content;
+}
+.mini-item:active {
+  opacity: 0.55;
+  transform: translateX(2px);
+}
+
+/* bottom glowing orb (tap → verse) */
+.mini-orb-bottom {
+  position: absolute;
+  bottom: 46px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background: radial-gradient(circle at 50% 36%, #bfe0ff 0%, #5aa0ff 40%, #2f6fe0 70%, #1a3f9c 100%);
+  box-shadow: 0 0 22px rgba(74, 150, 255, 0.75), 0 0 44px rgba(74, 150, 255, 0.35),
+    inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  animation: orbPulse 3.4s ease-in-out infinite;
+}
+@keyframes orbPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 22px rgba(74, 150, 255, 0.7), 0 0 44px rgba(74, 150, 255, 0.3),
+      inset 0 1px 2px rgba(255, 255, 255, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(74, 150, 255, 0.95), 0 0 60px rgba(74, 150, 255, 0.5),
+      inset 0 1px 2px rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* subtle secondary links flanking the orb */
+.mini-secondary {
+  position: absolute;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+}
+.mini-secondary a {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #4a4548;
+  text-decoration: none;
+}
+
+/* verse overlay */
+.mini-verse {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.92);
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+.mini-verse .vtext {
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.65;
+  color: rgba(248, 244, 240, 0.92);
+  max-width: 300px;
+  text-align: center;
+}
+.mini-verse .ref {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+.mini-verse .hint {
+  position: absolute;
+  bottom: 40px;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #3a3538;
+}
+
 /* ---------- Utility ---------- */
 .screen {
   flex: 1;
